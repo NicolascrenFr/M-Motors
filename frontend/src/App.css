@@ -1,0 +1,303 @@
+/* HEADER */
+
+.header {
+  background: #111827;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  min-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.header nav {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.header nav a {
+  color: white;
+  text-decoration: none;
+}
+
+.login-button,
+.hero-button,
+.financing button,
+.vehicle-content button,
+.modal button {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+}
+
+/* HERO */
+
+.hero {
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(
+      rgba(0, 0, 0, 0.65),
+      rgba(0, 0, 0, 0.65)
+    ),
+    url("https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1600&q=80")
+    center / cover;
+  color: white;
+}
+
+.hero-content {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.hero-subtitle,
+.section-heading p,
+.financing p:first-child {
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.hero h1 {
+  font-size: 52px;
+  margin: 20px 0;
+}
+
+.hero p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.hero-button {
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* CATALOGUE */
+
+.catalogue {
+  padding: 80px 0;
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section-heading h2 {
+  font-size: 36px;
+  margin: 15px 0;
+}
+
+.section-heading span {
+  color: #6b7280;
+}
+
+/* FILTRES */
+
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.filters button {
+  border: 1px solid #d1d5db;
+  background: white;
+  padding: 10px 25px;
+  border-radius: 6px;
+}
+
+.filters button.active {
+  background: #2563eb;
+  color: white;
+}
+
+/* VEHICULES */
+
+.vehicles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.vehicle-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.vehicle-image {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.vehicle-content {
+  padding: 20px;
+}
+
+.vehicle-type {
+  font-size: 13px;
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.vehicle-content h3 {
+  margin: 8px 0;
+  font-size: 22px;
+}
+
+.vehicle-content p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.vehicle-prices {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.vehicle-prices strong {
+  font-size: 18px;
+}
+
+.vehicle-prices span {
+  font-size: 13px;
+  color: #2563eb;
+}
+
+/* FINANCEMENT */
+
+.financing {
+  background: #111827;
+  color: white;
+  padding: 80px 0;
+  text-align: center;
+}
+
+.financing h2 {
+  font-size: 36px;
+  margin: 20px 0;
+}
+
+.financing p {
+  max-width: 700px;
+  margin: 0 auto 25px;
+  line-height: 1.6;
+}
+
+/* MODAL */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 200;
+}
+
+.modal {
+  position: relative;
+  background: white;
+  width: 100%;
+  max-width: 550px;
+  border-radius: 10px;
+  padding: 30px;
+}
+
+.modal img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.modal h2 {
+  margin-bottom: 15px;
+}
+
+.modal p {
+  margin-bottom: 8px;
+}
+
+.modal h3 {
+  font-size: 25px;
+  margin: 20px 0;
+}
+
+.close-button {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 35px;
+  height: 35px;
+  padding: 0 !important;
+  font-size: 24px;
+}
+
+/* FOOTER */
+
+footer {
+  background: #030712;
+  color: white;
+  padding: 40px 0;
+}
+
+footer p {
+  margin-top: 10px;
+  color: #9ca3af;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+  .vehicles-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 650px) {
+  .header nav a {
+    display: none;
+  }
+
+  .vehicles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 35px;
+  }
+
+  .filters {
+    flex-wrap: wrap;
+  }
+}
