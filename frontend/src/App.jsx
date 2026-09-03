@@ -131,7 +131,6 @@ function App() {
       </section>
 
       <FinancingForm />
-      
       {/* MODAL VEHICULE */}
       {selectedVehicle && (
         <div

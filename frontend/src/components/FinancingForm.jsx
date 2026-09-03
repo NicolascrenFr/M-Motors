@@ -104,17 +104,19 @@ function FinancingForm() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="financingType">Type de financement</label>
-            <select
-              id="financingType"
-              name="financingType"
-              value={formData.financingType}
-              onChange={handleChange}
+            <label htmlFor="financingType">Choix du financement</label>
+
+             <select
+                id="financingType"
+                name="financingType"
+                value={formData.financingType}
+                onChange={handleChange}
+                required
             >
-              <option value="Achat">Achat</option>
-              <option value="Location">Location</option>
+                <option value="Achat">Acheter le véhicule</option>
+                <option value="Location">Louer le véhicule</option>
             </select>
-          </div>
+           </div>
 
           <div className="form-group">
             <label htmlFor="duration">Durée</label>
