@@ -5,6 +5,7 @@ import FinancingForm from "./components/FinancingForm";
 import DocumentUpload from "./components/DocumentUpload";
 import DocumentList from "./components/DocumentList";
 import ClientSpace from "./components/ClientSpace";
+import DossierStatus from "./components/DossierStatus";
 import "./App.css";
 
 function App() {
@@ -143,6 +144,8 @@ function App() {
       <DocumentList documents={documents} />
 
       <ClientSpace />
+
+      <DossierStatus />
   
       {/* MODAL VEHICULE */}
       {selectedVehicle && (
