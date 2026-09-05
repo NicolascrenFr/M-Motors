@@ -2,6 +2,7 @@ import { useState } from "react";
 import vehicles from "./data/vehicles";
 import VehicleCard from "./components/VehicleCard";
 import FinancingForm from "./components/FinancingForm";
+import DocumentUpload from "./components/DocumentUpload";
 import "./App.css";
 
 function App() {
@@ -131,6 +132,8 @@ function App() {
       </section>
 
       <FinancingForm />
+      <DocumentUpload />
+
       {/* MODAL VEHICULE */}
       {selectedVehicle && (
         <div
