@@ -3,10 +3,11 @@ import vehicles from "./data/vehicles";
 import VehicleCard from "./components/VehicleCard";
 import FinancingForm from "./components/FinancingForm";
 import DocumentUpload from "./components/DocumentUpload";
+import DocumentList from "./components/DocumentList";
 import "./App.css";
 
 function App() {
-  const [filter, setFilter] = useState("tous");
+  const [documents, setDocuments] = useState([]);  const [filter, setFilter] = useState("tous");
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
   const filteredVehicles =
@@ -132,8 +133,13 @@ function App() {
       </section>
 
       <FinancingForm />
-      <DocumentUpload />
+      <DocumentUpload
+        documents={documents}
+        setDocuments={setDocuments}
+      />
 
+      <DocumentList documents={documents} />
+  
       {/* MODAL VEHICULE */}
       {selectedVehicle && (
         <div

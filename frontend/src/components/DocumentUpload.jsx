@@ -1,11 +1,13 @@
-import { useState } from "react";
+// Aucun import nécessaire
 
-function DocumentUpload() {
-  const [documents, setDocuments] = useState([]);
+function DocumentUpload({ documents, setDocuments }) {
 
   const handleChange = (event) => {
     const files = Array.from(event.target.files);
-    setDocuments(files);
+    setDocuments((previousDocuments) => [
+        ...previousDocuments,
+        ...files,
+      ]);
   };
 
   const handleSubmit = (event) => {
