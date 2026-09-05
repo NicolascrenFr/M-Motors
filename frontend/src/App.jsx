@@ -4,6 +4,7 @@ import VehicleCard from "./components/VehicleCard";
 import FinancingForm from "./components/FinancingForm";
 import DocumentUpload from "./components/DocumentUpload";
 import DocumentList from "./components/DocumentList";
+import ClientSpace from "./components/ClientSpace";
 import "./App.css";
 
 function App() {
@@ -133,12 +134,15 @@ function App() {
       </section>
 
       <FinancingForm />
+
       <DocumentUpload
         documents={documents}
         setDocuments={setDocuments}
       />
 
       <DocumentList documents={documents} />
+
+      <ClientSpace />
   
       {/* MODAL VEHICULE */}
       {selectedVehicle && (
