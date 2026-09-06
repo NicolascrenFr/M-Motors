@@ -31,6 +31,10 @@ function App() {
             <a href="#accueil">Accueil</a>
             <a href="#catalogue">Catalogue</a>
             <a href="#financement">Financement</a>
+            <a href="#documents">Documents</a>
+            <a href="#espace-client">Espace client</a>
+            <a href="#suivi-dossier">Suivi du dossier</a>
+            
             <button className="login-button">
               Connexion
             </button>

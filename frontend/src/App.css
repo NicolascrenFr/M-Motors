@@ -206,6 +206,196 @@
   line-height: 1.6;
 }
 
+/* FORMULAIRE DE FINANCEMENT */
+
+.financing-form {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.financing-form h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.financing-form > p {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.financing-button {
+  display: block;
+  margin: 15px auto 0;
+}
+
+.financing-section {
+  padding: 30px 20px;
+}
+
+.financing-container {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.financing-container h2 {
+  margin: 0 0 10px;
+}
+
+.financing-container > p {
+  margin: 0 0 20px;
+}
+
+/* SECTIONS CLIENT */
+
+.documents-section,
+.documents-list-section,
+.client-space-section,
+.dossier-status-section {
+  padding: 30px 20px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+}
+
+.documents-container,
+.client-space-container,
+.dossier-status-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.documents-container h2,
+.client-space-container h2,
+.dossier-status-container h2 {
+  margin: 0 0 10px;
+}
+
+.documents-container > p,
+.client-space-container > p,
+.dossier-status-container > p {
+  margin: 0 0 20px;
+}
+
+.documents-list,
+.documents-list-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px auto 0;
+  max-width: 700px;
+}
+
+.documents-list li,
+.documents-list-section li {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.documents-form {
+  max-width: 700px;
+  margin: 20px auto 0;
+  text-align: center;
+}
+
+.documents-form .form-group {
+  margin: 0 auto 20px;
+}
+
+.documents-form .form-group label {
+  display: block;
+  text-align: center;
+}
+
+.documents-form input[type="file"] {
+  display: inline-block;
+}
+
+/* ESPACE CLIENT */
+
+.client-info,
+.client-dossier,
+.client-documents {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.client-info h3,
+.client-dossier h3,
+.client-documents h3 {
+  margin: 0 0 10px;
+}
+
+.client-info p,
+.client-dossier p {
+  margin: 5px 0;
+}
+
+/* SUIVI DU DOSSIER */
+
+.dossier-status-section {
+  scroll-margin-top: 100px;
+}
+
+.dossier-status {
+  max-width: 700px;
+  margin: 20px auto 0;
+}
+
+.status-step {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.status-step span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.status-step h3 {
+  margin: 0 0 5px;
+}
+
+.status-step p {
+  margin: 0;
+}
+
 /* MODAL */
 
 .modal-overlay {

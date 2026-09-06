@@ -1,6 +1,9 @@
 function DossierStatus() {
     return (
-      <section className="dossier-status-section">
+    <section
+        id="suivi-dossier"
+        className="dossier-status-section"
+    >        
         <div className="dossier-status-container">
           <h2>Suivi de mon dossier</h2>
   
@@ -47,4 +50,3 @@ function DossierStatus() {
   }
   
   export default DossierStatus;
-  
