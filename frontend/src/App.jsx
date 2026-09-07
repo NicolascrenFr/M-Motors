@@ -6,6 +6,7 @@ import DocumentUpload from "./components/DocumentUpload";
 import DocumentList from "./components/DocumentList";
 import ClientSpace from "./components/ClientSpace";
 import DossierStatus from "./components/DossierStatus";
+import AdminDossiers from "./components/AdminDossiers";
 import "./App.css";
 
 function App() {
@@ -150,6 +151,8 @@ function App() {
       <ClientSpace />
 
       <DossierStatus />
+
+      <AdminDossiers />
   
       {/* MODAL VEHICULE */}
       {selectedVehicle && (

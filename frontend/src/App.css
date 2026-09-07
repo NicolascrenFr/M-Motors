@@ -355,6 +355,71 @@
   margin: 5px 0;
 }
 
+/* DOSSIERS CLIENTS */
+
+.admin-dossiers-section {
+  padding: 30px 20px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-dossiers-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.admin-dossiers-container h2 {
+  margin: 0 0 10px;
+}
+
+.admin-dossiers-container > p {
+  margin: 0 0 20px;
+}
+
+.dossiers-list {
+  display: grid;
+  gap: 15px;
+}
+
+.dossier-card {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.dossier-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.dossier-actions button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dossier-actions button:first-child {
+  background: #16a34a;
+  color: white;
+}
+
+.dossier-actions button:last-child {
+  background: #dc2626;
+  color: white;
+}
+
+.dossier-card h3 {
+  margin: 0 0 10px;
+}
+
+.dossier-card p {
+  margin: 5px 0;
+}
+
 /* SUIVI DU DOSSIER */
 
 .dossier-status-section {
