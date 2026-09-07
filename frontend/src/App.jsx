@@ -7,16 +7,19 @@ import DocumentList from "./components/DocumentList";
 import ClientSpace from "./components/ClientSpace";
 import DossierStatus from "./components/DossierStatus";
 import AdminDossiers from "./components/AdminDossiers";
+import AdminAddVehicle from "./components/AdminAddVehicle";
 import "./App.css";
 
 function App() {
-  const [documents, setDocuments] = useState([]);  const [filter, setFilter] = useState("tous");
+  const [documents, setDocuments] = useState([]);  
+  const [filter, setFilter] = useState("tous");
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [vehicleList, setVehicleList] = useState(vehicles);
 
   const filteredVehicles =
     filter === "tous"
-      ? vehicles
-      : vehicles.filter((vehicle) => vehicle.type === filter);
+      ? vehicleList
+      : vehicleList.filter((vehicle) => vehicle.type === filter);
 
   return (
     <div className="app">
@@ -153,6 +156,8 @@ function App() {
       <DossierStatus />
 
       <AdminDossiers />
+
+      <AdminAddVehicle setVehicleList={setVehicleList} />
   
       {/* MODAL VEHICULE */}
       {selectedVehicle && (

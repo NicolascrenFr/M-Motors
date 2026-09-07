@@ -186,6 +186,32 @@
   color: #2563eb;
 }
 
+/* AJOUTER UN VEHICULE */
+
+.admin-add-vehicle-section {
+  padding: 30px 20px;
+  text-align: center;
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-add-vehicle-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.admin-add-vehicle-container h2 {
+  margin: 0 0 10px;
+}
+
+.admin-add-vehicle-container > p {
+  margin: 0 0 20px;
+}
+
+.admin-add-vehicle-form {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
 /* FINANCEMENT */
 
 .financing {
