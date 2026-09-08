@@ -23,6 +23,12 @@ function App() {
 
   const [vehicleList, setVehicleList] = useState(vehicles);
 
+  const handleDelete = (id) => {
+    setVehicleList((previousVehicles) =>
+      previousVehicles.filter((vehicle) => vehicle.id !== id)
+    );
+  };
+
   useEffect(() => {
     if (editingVehicle) {
       const editForm = document.getElementById("modifier-vehicule");
@@ -138,6 +144,7 @@ function App() {
             vehicle={vehicle}
             onDetails={setSelectedVehicle}
             onEdit={setEditingVehicle}
+            onDelete={handleDelete}
             />
           ))}
         </div>
