@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import vehicles from "./data/vehicles";
 import VehicleCard from "./components/VehicleCard";
 import FinancingForm from "./components/FinancingForm";
@@ -8,13 +8,33 @@ import ClientSpace from "./components/ClientSpace";
 import DossierStatus from "./components/DossierStatus";
 import AdminDossiers from "./components/AdminDossiers";
 import AdminAddVehicle from "./components/AdminAddVehicle";
+import AdminEditVehicle from "./components/AdminEditVehicle";
 import "./App.css";
 
 function App() {
-  const [documents, setDocuments] = useState([]);  
+
+  const [documents, setDocuments] = useState([]);
+
   const [filter, setFilter] = useState("tous");
+
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+
+  const [editingVehicle, setEditingVehicle] = useState(null);
+
   const [vehicleList, setVehicleList] = useState(vehicles);
+
+  useEffect(() => {
+    if (editingVehicle) {
+      const editForm = document.getElementById("modifier-vehicule");
+
+      if (editForm) {
+        editForm.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  }, [editingVehicle]);
 
   const filteredVehicles =
     filter === "tous"
@@ -114,9 +134,10 @@ function App() {
         <div className="vehicles-grid">
           {filteredVehicles.map((vehicle) => (
             <VehicleCard
-              key={vehicle.id}
-              vehicle={vehicle}
-              onDetails={setSelectedVehicle}
+            key={vehicle.id}
+            vehicle={vehicle}
+            onDetails={setSelectedVehicle}
+            onEdit={setEditingVehicle}
             />
           ))}
         </div>
@@ -158,6 +179,13 @@ function App() {
       <AdminDossiers />
 
       <AdminAddVehicle setVehicleList={setVehicleList} />
+
+      {editingVehicle && (
+        <AdminEditVehicle
+          vehicle={editingVehicle}
+          setVehicleList={setVehicleList}
+        />
+      )}
   
       {/* MODAL VEHICULE */}
       {selectedVehicle && (

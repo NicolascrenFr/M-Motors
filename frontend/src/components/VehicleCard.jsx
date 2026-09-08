@@ -1,5 +1,4 @@
-function VehicleCard({ vehicle, onDetails }) {
-    return (
+function VehicleCard({ vehicle, onDetails, onEdit }) {    return (
       <article className="vehicle-card">
         <img
           src={vehicle.image}
@@ -28,9 +27,16 @@ function VehicleCard({ vehicle, onDetails }) {
             </span>
           </div>
   
-          <button onClick={() => onDetails(vehicle)}>
-            Voir le véhicule
-          </button>
+          <div className="vehicle-actions">
+            <button onClick={() => onDetails(vehicle)}>
+              Voir le véhicule
+            </button>
+
+            <button onClick={() => onEdit(vehicle)}>
+              Modifier le véhicule
+            </button>
+          </div>
+
         </div>
       </article>
     );
