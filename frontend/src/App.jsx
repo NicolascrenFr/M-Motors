@@ -9,6 +9,7 @@ import DossierStatus from "./components/DossierStatus";
 import AdminDossiers from "./components/AdminDossiers";
 import AdminAddVehicle from "./components/AdminAddVehicle";
 import AdminEditVehicle from "./components/AdminEditVehicle";
+import AdminNotification from "./components/AdminNotification";
 import "./App.css";
 
 function App() {
@@ -22,6 +23,8 @@ function App() {
   const [editingVehicle, setEditingVehicle] = useState(null);
 
   const [vehicleList, setVehicleList] = useState(vehicles);
+
+  const [selectedDossier, setSelectedDossier] = useState(null);
 
   const handleDelete = (id) => {
     setVehicleList((previousVehicles) =>
@@ -183,8 +186,12 @@ function App() {
 
       <DossierStatus />
 
-      <AdminDossiers />
-
+      <AdminDossiers onSelectDossier={setSelectedDossier} />
+      
+      {selectedDossier && (
+      <AdminNotification dossier={selectedDossier} />
+      )}
+      
       <AdminAddVehicle setVehicleList={setVehicleList} />
 
       {editingVehicle && (

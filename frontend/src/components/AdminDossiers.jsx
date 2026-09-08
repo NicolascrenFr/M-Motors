@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-function AdminDossiers() {
-    const dossiers = [
+function AdminDossiers({ onSelectDossier }) {    const dossiers = [
       {
         id: 1,
         client: "Jean Dupont",
@@ -99,6 +98,13 @@ const handleReject = (id) => {
                   onClick={() => handleReject(dossier.id)}
                 >
                   Refuser le dossier
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onSelectDossier(dossier)}
+                >
+                  Notifier le client
                 </button>
               </div>
             </div>
