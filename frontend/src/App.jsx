@@ -7,7 +7,7 @@ import DocumentList from "./components/DocumentList";
 import "./App.css";
 
 function App() {
-  const [documents, setDocuments] = useState([]);  const [filter, setFilter] = useState("tous");
+  const [filter, setFilter] = useState("tous");
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
   const filteredVehicles =
@@ -133,12 +133,8 @@ function App() {
       </section>
 
       <FinancingForm />
-      <DocumentUpload
-        documents={documents}
-        setDocuments={setDocuments}
-      />
-
-      <DocumentList documents={documents} />
+      <DocumentUpload />
+<DocumentList />
   
       {/* MODAL VEHICULE */}
       {selectedVehicle && (
