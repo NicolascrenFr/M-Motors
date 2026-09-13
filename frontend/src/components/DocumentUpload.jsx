@@ -2,23 +2,63 @@ import { useState } from "react";
 
 function DocumentUpload() {
   const [documents, setDocuments] = useState([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleChange = (event) => {
     const files = Array.from(event.target.files);
+
     setDocuments(files);
+    setMessage("");
+    setError("");
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     if (documents.length === 0) {
-      alert("Veuillez sélectionner au moins un document.");
+      setError("Veuillez sélectionner au moins un document.");
       return;
     }
 
-    console.log("Documents sélectionnés :", documents);
+    setIsUploading(true);
+    setMessage("");
+    setError("");
 
-    alert("Vos documents ont été sélectionnés.");
+    try {
+      for (const document of documents) {
+        const formData = new FormData();
+
+        formData.append("client_id", "1");
+        formData.append("type_document", "justificatif");
+        formData.append("document", document);
+
+        const response = await fetch(
+          "http://localhost:3000/api/documents",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Erreur lors de l'envoi du document."
+          );
+        }
+      }
+
+      setMessage("Vos documents ont été envoyés avec succès.");
+      setDocuments([]);
+    } catch (error) {
+      console.error("Erreur :", error);
+      setError(error.message);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -42,8 +82,8 @@ function DocumentUpload() {
               id="documents"
               name="documents"
               multiple
+              accept=".pdf,.jpg,.jpeg"
               onChange={handleChange}
-              accept=".pdf,.jpg,.jpeg,.png"
             />
           </div>
 
@@ -61,8 +101,26 @@ function DocumentUpload() {
             </div>
           )}
 
-          <button type="submit" className="financing-button">
-            Télécharger les documents
+          {message && (
+            <p className="success-message">
+              {message}
+            </p>
+          )}
+
+          {error && (
+            <p className="error-message">
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="financing-button"
+            disabled={isUploading}
+          >
+            {isUploading
+              ? "Envoi en cours..."
+              : "Télécharger les documents"}
           </button>
         </form>
       </div>
