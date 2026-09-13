@@ -20,12 +20,42 @@ function FinancingForm() {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log("Dossier de financement :", formData);
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/dossiers",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            client_id: 1,
+            vehicule: formData.vehicle,
+            type_financement: formData.financingType,
+            duree: Number(formData.duration),
+          }),
+        }
+      );
 
-    alert("Votre dossier de financement a été créé.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Erreur lors de la création du dossier."
+        );
+      }
+
+      alert(
+        `Dossier créé avec succès. Numéro du dossier : ${data.dossier.id}`
+      );
+    } catch (error) {
+      console.error("Erreur :", error);
+
+      alert(error.message);
+    }
   };
 
   return (
