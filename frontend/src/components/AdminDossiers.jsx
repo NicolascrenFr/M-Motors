@@ -1,112 +1,116 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function AdminDossiers() {
-    const dossiers = [
-      {
-        id: 1,
-        client: "Jean Dupont",
-        email: "jean.dupont@email.fr",
-        vehicle: "Peugeot 308",
-        financing: "Location",
-        duration: "36 mois",
-        status: "En cours d'étude",
-      },
-      {
-        id: 2,
-        client: "Marie Martin",
-        email: "marie.martin@email.fr",
-        vehicle: "Renault Austral",
-        financing: "Achat",
-        duration: "48 mois",
-        status: "Documents reçus",
-      },
-      {
-        id: 3,
-        client: "Pierre Durand",
-        email: "pierre.durand@email.fr",
-        vehicle: "Tesla Model 3",
-        financing: "Location",
-        duration: "60 mois",
-        status: "Dossier créé",
-      },
-    ];
-  
-    const [dossiersList, setDossiersList] = useState(dossiers);
+  const [dossiers, setDossiers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    const handleValidate = (id) => {
-      setDossiersList((previousDossiers) =>
-        previousDossiers.map((dossier) =>
-          dossier.id === id
-            ? { ...dossier, status: "Dossier validé" }
-            : dossier
-        )
-      );
+  useEffect(() => {
+    const fetchDossiers = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/dossiers");
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Impossible de récupérer les dossiers."
+          );
+        }
+
+        setDossiers(data.dossiers);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des dossiers :",
+          error
+        );
+
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-const handleReject = (id) => {
-  setDossiersList((previousDossiers) =>
-    previousDossiers.map((dossier) =>
-      dossier.id === id
-        ? { ...dossier, status: "Dossier refusé" }
-        : dossier
-    )
-  );
-};
+    fetchDossiers();
+  }, []);
 
+  if (loading) {
     return (
-      <section className="admin-dossiers-section" id="dossiers-clients">
+      <section
+        className="admin-dossiers-section"
+        id="dossiers-clients"
+      >
         <div className="admin-dossiers-container">
           <h2>Dossiers clients</h2>
-  
-          <p>
-            Consultez les dossiers de financement déposés par les clients.
-          </p>
-  
-          <div className="dossiers-list">
-            {dossiersList.map((dossier) => (
-              <div className="dossier-card" key={dossier.id}>
-                <h3>{dossier.client}</h3>
-  
-                <p>
-                  <strong>Email :</strong> {dossier.email}
-                </p>
-  
-                <p>
-                  <strong>Véhicule :</strong> {dossier.vehicle}
-                </p>
-  
-                <p>
-                  <strong>Financement :</strong> {dossier.financing}
-                </p>
-  
-                <p>
-                  <strong>Durée :</strong> {dossier.duration}
-                </p>
-  
-                <p>
-                  <strong>Statut :</strong> {dossier.status}
-                </p>
-                <div className="dossier-actions">
-                <button
-                  type="button"
-                  onClick={() => handleValidate(dossier.id)}
-                > 
-                  Valider le dossier
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleReject(dossier.id)}
-                >
-                  Refuser le dossier
-                </button>
-              </div>
-            </div>
-            ))}
-          </div>
+          <p>Chargement des dossiers...</p>
         </div>
       </section>
     );
   }
-  
-  export default AdminDossiers;
+
+  if (error) {
+    return (
+      <section
+        className="admin-dossiers-section"
+        id="dossiers-clients"
+      >
+        <div className="admin-dossiers-container">
+          <h2>Dossiers clients</h2>
+          <p className="error-message">{error}</p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      className="admin-dossiers-section"
+      id="dossiers-clients"
+    >
+      <div className="admin-dossiers-container">
+        <h2>Dossiers clients</h2>
+
+        <p>
+          Consultez les dossiers de financement déposés par les clients.
+        </p>
+
+        {dossiers.length === 0 ? (
+          <p>Aucun dossier de financement trouvé.</p>
+        ) : (
+          <div className="dossiers-list">
+            {dossiers.map((dossier) => (
+              <div className="dossier-card" key={dossier.id}>
+                <h3>
+                  {dossier.prenom} {dossier.nom}
+                </h3>
+
+                <p>
+                  <strong>Email :</strong> {dossier.email}
+                </p>
+
+                <p>
+                  <strong>Véhicule :</strong> {dossier.vehicule}
+                </p>
+
+                <p>
+                  <strong>Financement :</strong>{" "}
+                  {dossier.type_financement}
+                </p>
+
+                <p>
+                  <strong>Durée :</strong> {dossier.duree} mois
+                </p>
+
+                <p>
+                  <strong>Statut :</strong> {dossier.statut}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export default AdminDossiers;
