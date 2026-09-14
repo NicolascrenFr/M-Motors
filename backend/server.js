@@ -292,6 +292,52 @@ app.get("/api/dossiers", async (req, res) => {
   }
 });
 
+app.put("/api/dossiers/:id/statut", async (req, res) => {
+  const { id } = req.params;
+  const { statut } = req.body;
+
+  const statutsAutorises = [
+    "Dossier validé",
+    "Dossier refusé",
+  ];
+
+  if (!statutsAutorises.includes(statut)) {
+    return res.status(400).json({
+      message: "Statut invalide.",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE dossiers
+       SET statut = $1
+       WHERE id = $2
+       RETURNING id, client_id, vehicule, type_financement, duree, statut, created_at`,
+      [statut, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Dossier introuvable.",
+      });
+    }
+
+    res.status(200).json({
+      message: "Statut du dossier mis à jour.",
+      dossier: result.rows[0],
+    });
+  } catch (error) {
+    console.error(
+      "Erreur lors de la mise à jour du statut :",
+      error
+    );
+
+    res.status(500).json({
+      message: "Impossible de mettre à jour le statut du dossier.",
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
 });
