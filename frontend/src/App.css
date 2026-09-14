@@ -206,6 +206,133 @@
   line-height: 1.6;
 }
 
+/* SUIVI DU DOSSIER */
+
+.dossier-status-section {
+  padding: 80px 0;
+  background: #f8fafc;
+}
+
+.dossier-status-container {
+  width: 90%;
+  max-width: 900px;
+  margin: auto;
+}
+
+.dossier-status-container > h2 {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.dossier-status-container > p {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+.current-status-box {
+  background: #111827;
+  color: white;
+  border-radius: 10px;
+  padding: 25px 30px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.current-status-box span {
+  display: block;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.current-status-box strong {
+  font-size: 25px;
+}
+
+.dossier-status {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.status-step {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.status-step > span {
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #374151;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.status-step h3 {
+  margin: 0 0 6px;
+}
+
+.status-step p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.status-step.completed {
+  border-color: #16a34a;
+}
+
+.status-step.completed > span {
+  background: #16a34a;
+  color: white;
+}
+
+.status-step.current {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.status-step.current > span {
+  background: #2563eb;
+  color: white;
+}
+
+.status-step.current h3 {
+  color: #1d4ed8;
+}
+
+.status-message {
+  margin-top: 25px;
+  padding: 18px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.status-message.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-message.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 /* MODAL */
 
 .modal-overlay {
