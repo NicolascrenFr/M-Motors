@@ -21,34 +21,65 @@ function AdminAddVehicle({ setVehicleList }) {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log("Nouveau véhicule :", vehicle);
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/vehicles",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            brand: vehicle.brand,
+            model: vehicle.model,
+            year: Number(vehicle.year),
+            fuel: vehicle.fuel,
+            transmission: vehicle.transmission,
+            price: Number(vehicle.price),
+            monthlyPrice: Number(vehicle.monthlyPrice),
+            type: vehicle.type,
+            image:
+              "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=80",
+          }),
+        }
+      );
 
-    setVehicleList((previousVehicles) => [
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Impossible d'ajouter le véhicule."
+        );
+      }
+
+      setVehicleList((previousVehicles) => [
         ...previousVehicles,
         {
-          ...vehicle,
-          id: Date.now(),
-          year: Number(vehicle.year),
-          price: Number(vehicle.price),
-          monthlyPrice: Number(vehicle.monthlyPrice),
+          ...data.vehicle,
+          price: Number(data.vehicle.price),
+          monthlyPrice: Number(data.vehicle.monthly_price),
         },
       ]);
 
-    alert("Le véhicule a été ajouté au catalogue.");
+      alert("Le véhicule a été ajouté au catalogue.");
 
-    setVehicle({
-      brand: "",
-      model: "",
-      year: "",
-      fuel: "",
-      transmission: "",
-      price: "",
-      monthlyPrice: "",
-      type: "achat",
-    });
+      setVehicle({
+        brand: "",
+        model: "",
+        year: "",
+        fuel: "",
+        transmission: "",
+        price: "",
+        monthlyPrice: "",
+        type: "achat",
+      });
+    } catch (error) {
+      console.error("Erreur :", error);
+      alert(error.message);
+    }
   };
 
   return (

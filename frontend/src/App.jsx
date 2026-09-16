@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import vehicles from "./data/vehicles";
 import VehicleCard from "./components/VehicleCard";
 import FinancingForm from "./components/FinancingForm";
@@ -14,7 +14,49 @@ function App() {
   const [documents, setDocuments] = useState([]);  
   const [filter, setFilter] = useState("tous");
   const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const [vehicleList, setVehicleList] = useState(vehicles);
+  const [vehicleList, setVehicleList] = useState([]);
+  const [vehiclesLoading, setVehiclesLoading] = useState(true);
+  const [vehiclesError, setVehiclesError] = useState("");
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/vehicles"
+        );
+  
+        const data = await response.json();
+  
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Impossible de récupérer les véhicules."
+          );
+        }
+  
+        const formattedVehicles = data.vehicles.map((vehicle) => ({
+          ...vehicle,
+          price: Number(vehicle.price),
+          monthlyPrice: Number(vehicle.monthly_price),
+        }));
+  
+        setVehicleList(formattedVehicles);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des véhicules :",
+          error
+        );
+  
+        setVehiclesError(error.message);
+  
+        // Fallback temporaire sur les véhicules historiques
+        setVehicleList(vehicles);
+      } finally {
+        setVehiclesLoading(false);
+      }
+    };
+  
+    fetchVehicles();
+  }, []);
 
   const filteredVehicles =
     filter === "tous"
@@ -112,14 +154,24 @@ function App() {
 
         {/* VEHICULES */}
         <div className="vehicles-grid">
-          {filteredVehicles.map((vehicle) => (
-            <VehicleCard
-              key={vehicle.id}
-              vehicle={vehicle}
-              onDetails={setSelectedVehicle}
-            />
-          ))}
+          {vehiclesLoading ? (
+            <p>Chargement des véhicules...</p>
+          ) : (
+            filteredVehicles.map((vehicle) => (
+              <VehicleCard
+                key={vehicle.id}
+                vehicle={vehicle}
+                onDetails={setSelectedVehicle}
+              />
+            ))
+          )}
         </div>
+
+        {vehiclesError && (
+          <p className="error-message">
+            Les véhicules affichés proviennent temporairement du catalogue local.
+          </p>
+        )}
       </main>
 
       {/* FINANCEMENT */}
