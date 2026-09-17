@@ -12,23 +12,56 @@ function AdminEditVehicle({ vehicle, setVehicleList }) {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setVehicleList((previousVehicles) =>
-      previousVehicles.map((currentVehicle) =>
-        currentVehicle.id === formData.id
-          ? {
-              ...formData,
-              year: Number(formData.year),
-              price: Number(formData.price),
-              monthlyPrice: Number(formData.monthlyPrice),
-            }
-          : currentVehicle
-      )
-    );
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/vehicles/${formData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            brand: formData.brand,
+            model: formData.model,
+            year: Number(formData.year),
+            fuel: formData.fuel,
+            transmission: formData.transmission,
+            price: Number(formData.price),
+            monthlyPrice: Number(formData.monthlyPrice),
+            type: formData.type,
+            image: formData.image || "",
+          }),
+        }
+      );
 
-    alert("Le véhicule a été modifié.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Impossible de modifier le véhicule."
+        );
+      }
+
+      setVehicleList((previousVehicles) =>
+        previousVehicles.map((currentVehicle) =>
+          currentVehicle.id === data.vehicle.id
+            ? {
+                ...data.vehicle,
+                price: Number(data.vehicle.price),
+                monthlyPrice: Number(data.vehicle.monthly_price),
+              }
+            : currentVehicle
+        )
+      );
+
+      alert("Le véhicule a été modifié.");
+    } catch (error) {
+      console.error("Erreur :", error);
+      alert(error.message);
+    }
   };
 
   return (
