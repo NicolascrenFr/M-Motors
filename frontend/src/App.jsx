@@ -21,13 +21,9 @@ function App() {
 
   const [editingVehicle, setEditingVehicle] = useState(null);
 
-  const [vehicleList, setVehicleList] = useState(vehicles);
-
-  const handleDelete = (id) => {
-    setVehicleList((previousVehicles) =>
-      previousVehicles.filter((vehicle) => vehicle.id !== id)
-    );
-  };
+  const [vehicleList, setVehicleList] = useState([]);
+  const [vehiclesLoading, setVehiclesLoading] = useState(true);
+  const [vehiclesError, setVehiclesError] = useState("");
 
   useEffect(() => {
     if (editingVehicle) {
@@ -41,6 +37,95 @@ function App() {
       }
     }
   }, [editingVehicle]);
+
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/vehicles"
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message ||
+              "Impossible de récupérer les véhicules."
+          );
+        }
+
+        const formattedVehicles = data.vehicles.map((vehicle) => ({
+          ...vehicle,
+          price: Number(vehicle.price),
+          monthlyPrice: Number(vehicle.monthly_price),
+        }));
+
+        setVehicleList(formattedVehicles);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des véhicules :",
+          error
+        );
+
+        setVehiclesError(error.message);
+
+        // Secours temporaire si l'API est indisponible
+        setVehicleList(vehicles);
+      } finally {
+        setVehiclesLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, []);
+
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "Êtes-vous sûr de vouloir supprimer ce véhicule ?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/vehicles/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Impossible de supprimer le véhicule."
+        );
+      }
+
+      setVehicleList((previousVehicles) =>
+        previousVehicles.filter((vehicle) => vehicle.id !== id)
+      );
+
+      if (editingVehicle?.id === id) {
+        setEditingVehicle(null);
+      }
+
+      if (selectedVehicle?.id === id) {
+        setSelectedVehicle(null);
+      }
+
+      alert("Le véhicule a été supprimé.");
+    } catch (error) {
+      console.error(
+        "Erreur lors de la suppression du véhicule :",
+        error
+      );
+
+      alert(error.message);
+    }
+  };
 
   const filteredVehicles =
     filter === "tous"
@@ -64,7 +149,7 @@ function App() {
             <a href="#documents">Documents</a>
             <a href="#espace-client">Espace client</a>
             <a href="#suivi-dossier">Suivi du dossier</a>
-            
+
             <button className="login-button">
               Connexion
             </button>
@@ -138,16 +223,27 @@ function App() {
 
         {/* VEHICULES */}
         <div className="vehicles-grid">
-          {filteredVehicles.map((vehicle) => (
-            <VehicleCard
-            key={vehicle.id}
-            vehicle={vehicle}
-            onDetails={setSelectedVehicle}
-            onEdit={setEditingVehicle}
-            onDelete={handleDelete}
-            />
-          ))}
-        </div>
+            {vehiclesLoading ? (
+              <p>Chargement des véhicules...</p>
+            ) : (
+              filteredVehicles.map((vehicle) => (
+                <VehicleCard
+                  key={vehicle.id}
+                  vehicle={vehicle}
+                  onDetails={setSelectedVehicle}
+                  onEdit={setEditingVehicle}
+                  onDelete={handleDelete}
+                />
+              ))
+            )}
+          </div>
+
+          {vehiclesError && (
+            <p className="error-message">
+              Impossible de récupérer le catalogue depuis le serveur.
+              Les données locales sont affichées temporairement.
+            </p>
+          )}
       </main>
 
       {/* FINANCEMENT */}
@@ -193,7 +289,7 @@ function App() {
           setVehicleList={setVehicleList}
         />
       )}
-  
+
       {/* MODAL VEHICULE */}
       {selectedVehicle && (
         <div
