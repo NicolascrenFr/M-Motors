@@ -1,118 +1,239 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function AdminDossiers({ onSelectDossier }) {    const dossiers = [
-      {
-        id: 1,
-        client: "Jean Dupont",
-        email: "jean.dupont@email.fr",
-        vehicle: "Peugeot 308",
-        financing: "Location",
-        duration: "36 mois",
-        status: "En cours d'étude",
-      },
-      {
-        id: 2,
-        client: "Marie Martin",
-        email: "marie.martin@email.fr",
-        vehicle: "Renault Austral",
-        financing: "Achat",
-        duration: "48 mois",
-        status: "Documents reçus",
-      },
-      {
-        id: 3,
-        client: "Pierre Durand",
-        email: "pierre.durand@email.fr",
-        vehicle: "Tesla Model 3",
-        financing: "Location",
-        duration: "60 mois",
-        status: "Dossier créé",
-      },
-    ];
-  
-    const [dossiersList, setDossiersList] = useState(dossiers);
+function AdminDossiers({ onSelectDossier }) {
+  const [dossiers, setDossiers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [updatingId, setUpdatingId] = useState(null);
 
-    const handleValidate = (id) => {
-      setDossiersList((previousDossiers) =>
+  const fetchDossiers = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/dossiers"
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Impossible de récupérer les dossiers."
+        );
+      }
+
+      setDossiers(data.dossiers);
+      setError("");
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des dossiers :",
+        error
+      );
+
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDossiers();
+
+    const handleDossierUpdated = () => {
+      fetchDossiers();
+    };
+
+    window.addEventListener(
+      "dossier-updated",
+      handleDossierUpdated
+    );
+
+    return () => {
+      window.removeEventListener(
+        "dossier-updated",
+        handleDossierUpdated
+      );
+    };
+  }, []);
+
+  const updateStatus = async (id, statut) => {
+    setUpdatingId(id);
+    setError("");
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/dossiers/${id}/statut`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            statut,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Impossible de modifier le statut."
+        );
+      }
+
+      setDossiers((previousDossiers) =>
         previousDossiers.map((dossier) =>
           dossier.id === id
-            ? { ...dossier, status: "Dossier validé" }
+            ? {
+                ...dossier,
+                statut: data.dossier.statut,
+              }
             : dossier
         )
       );
-    };
 
-const handleReject = (id) => {
-  setDossiersList((previousDossiers) =>
-    previousDossiers.map((dossier) =>
-      dossier.id === id
-        ? { ...dossier, status: "Dossier refusé" }
-        : dossier
-    )
-  );
-};
+      window.dispatchEvent(
+        new CustomEvent("dossier-updated", {
+          detail: data.dossier,
+        })
+      );
+    } catch (error) {
+      console.error(
+        "Erreur lors de la mise à jour du statut :",
+        error
+      );
 
+      setError(error.message);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  if (loading) {
     return (
-      <section className="admin-dossiers-section" id="dossiers-clients">
+      <section
+        className="admin-dossiers-section"
+        id="dossiers-clients"
+      >
         <div className="admin-dossiers-container">
           <h2>Dossiers clients</h2>
-  
-          <p>
-            Consultez les dossiers de financement déposés par les clients.
-          </p>
-  
-          <div className="dossiers-list">
-            {dossiersList.map((dossier) => (
-              <div className="dossier-card" key={dossier.id}>
-                <h3>{dossier.client}</h3>
-  
-                <p>
-                  <strong>Email :</strong> {dossier.email}
-                </p>
-  
-                <p>
-                  <strong>Véhicule :</strong> {dossier.vehicle}
-                </p>
-  
-                <p>
-                  <strong>Financement :</strong> {dossier.financing}
-                </p>
-  
-                <p>
-                  <strong>Durée :</strong> {dossier.duration}
-                </p>
-  
-                <p>
-                  <strong>Statut :</strong> {dossier.status}
-                </p>
-                <div className="dossier-actions">
-                <button
-                  type="button"
-                  onClick={() => handleValidate(dossier.id)}
-                > 
-                  Valider le dossier
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleReject(dossier.id)}
-                >
-                  Refuser le dossier
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => onSelectDossier(dossier)}
-                >
-                  Notifier le client
-                </button>
-              </div>
-            </div>
-            ))}
-          </div>
+          <p>Chargement des dossiers...</p>
         </div>
       </section>
     );
   }
-  
-  export default AdminDossiers;
+
+  return (
+    <section
+      className="admin-dossiers-section"
+      id="dossiers-clients"
+    >
+      <div className="admin-dossiers-container">
+        <h2>Dossiers clients</h2>
+
+        <p>
+          Consultez et traitez les dossiers de financement déposés
+          par les clients.
+        </p>
+
+        {error && (
+          <p className="error-message">
+            {error}
+          </p>
+        )}
+
+        {dossiers.length === 0 ? (
+          <p>Aucun dossier de financement trouvé.</p>
+        ) : (
+          <div className="dossiers-list">
+            {dossiers.map((dossier) => {
+              const decisionMade =
+                dossier.statut === "Dossier validé" ||
+                dossier.statut === "Dossier refusé";
+
+              return (
+                <div
+                  className="dossier-card"
+                  key={dossier.id}
+                >
+                  <h3>
+                    {dossier.prenom} {dossier.nom}
+                  </h3>
+
+                  <p>
+                    <strong>Email :</strong> {dossier.email}
+                  </p>
+
+                  <p>
+                    <strong>Véhicule :</strong>{" "}
+                    {dossier.vehicule}
+                  </p>
+
+                  <p>
+                    <strong>Financement :</strong>{" "}
+                    {dossier.type_financement}
+                  </p>
+
+                  <p>
+                    <strong>Durée :</strong>{" "}
+                    {dossier.duree} mois
+                  </p>
+
+                  <p>
+                    <strong>Statut :</strong>{" "}
+                    {dossier.statut}
+                  </p>
+
+                  <div className="dossier-actions">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateStatus(
+                          dossier.id,
+                          "Dossier validé"
+                        )
+                      }
+                      disabled={
+                        updatingId === dossier.id ||
+                        dossier.statut === "Dossier validé"
+                      }
+                    >
+                      Valider le dossier
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateStatus(
+                          dossier.id,
+                          "Dossier refusé"
+                        )
+                      }
+                      disabled={
+                        updatingId === dossier.id ||
+                        dossier.statut === "Dossier refusé"
+                      }
+                    >
+                      Refuser le dossier
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onSelectDossier(dossier)
+                      }
+                      disabled={!decisionMade}
+                    >
+                      Notifier le client
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export default AdminDossiers;
