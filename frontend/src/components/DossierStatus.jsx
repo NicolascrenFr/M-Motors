@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 
 function getCurrentClientId() {
-  const clientId = localStorage.getItem("clientId");
-
-  return clientId || "1";
+  return localStorage.getItem("clientId");
 }
 
 function DossierStatus() {
@@ -12,7 +10,22 @@ function DossierStatus() {
   const [error, setError] = useState("");
 
   const clientId = getCurrentClientId();
-
+  if (!clientId) {
+    return (
+      <section
+        className="dossier-status-section"
+        id="suivi-dossier"
+      >
+        <div className="dossier-status-container">
+          <h2>Suivi de mon dossier</h2>
+          <p>
+            Connectez-vous pour consulter votre dossier.
+          </p>
+        </div>
+      </section>
+    );
+  }
+  
   useEffect(() => {
     const fetchDossier = async () => {
       try {

@@ -3,10 +3,17 @@ const cors = require("cors");
 require("dotenv").config();
 const { encrypt } = require("./crypto");
 const multer = require("multer");
-
 const pool = require("./db");
+const authRoutes = require("./auth");
 
 const app = express();
+
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.use("/api/auth", authRoutes);
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -29,11 +36,6 @@ const upload = multer({
     }
   },
 });
-
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({

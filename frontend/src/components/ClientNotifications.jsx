@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 
 function getCurrentClientId() {
-  const clientId = localStorage.getItem("clientId");
-
-  return clientId || "1";
+  return localStorage.getItem("clientId");
 }
 
 function ClientNotifications() {
@@ -12,6 +10,21 @@ function ClientNotifications() {
   const [error, setError] = useState("");
 
   const clientId = getCurrentClientId();
+  if (!clientId) {
+    return (
+      <section
+        className="client-notifications-section"
+        id="notifications"
+      >
+        <div className="client-notifications-container">
+          <h2>Mes notifications</h2>
+          <p>
+            Connectez-vous pour consulter vos notifications.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   const fetchNotifications = async () => {
     try {

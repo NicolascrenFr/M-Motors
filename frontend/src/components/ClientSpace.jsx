@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 
 function getCurrentClientId() {
-  const clientId = localStorage.getItem("clientId");
-
-  return clientId || "1";
+  return localStorage.getItem("clientId");
 }
 
 function ClientSpace() {
@@ -13,6 +11,21 @@ function ClientSpace() {
   const [error, setError] = useState("");
 
   const clientId = getCurrentClientId();
+  if (!clientId) {
+    return (
+      <section
+        className="client-space-section"
+        id="espace-client"
+      >
+        <div className="client-space-container">
+          <h2>Mon espace client</h2>
+          <p>
+            Connectez-vous pour accéder à votre espace client.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   useEffect(() => {
     const fetchClientSpace = async () => {

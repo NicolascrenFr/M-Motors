@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+
 import vehicles from "./data/vehicles";
+
 import VehicleCard from "./components/VehicleCard";
 import FinancingForm from "./components/FinancingForm";
 import DocumentUpload from "./components/DocumentUpload";
@@ -11,10 +13,18 @@ import AdminNotification from "./components/AdminNotification";
 import ClientNotifications from "./components/ClientNotifications";
 import AdminAddVehicle from "./components/AdminAddVehicle";
 import AdminEditVehicle from "./components/AdminEditVehicle";
+import AuthModal from "./components/AuthModal";
+import ProfileModal from "./components/ProfileModal";
+
+import {
+  apiUrl,
+  clearSession,
+  getCurrentUser,
+} from "./auth";
+
 import "./App.css";
 
 function App() {
-
   const [documents, setDocuments] = useState([]);
 
   const [filter, setFilter] = useState("tous");
@@ -29,9 +39,20 @@ function App() {
   const [vehiclesLoading, setVehiclesLoading] = useState(true);
   const [vehiclesError, setVehiclesError] = useState("");
 
+  const [currentUser, setCurrentUser] = useState(
+    getCurrentUser()
+  );
+
+  const [showAuthModal, setShowAuthModal] =
+    useState(false);
+
+  const [showProfileModal, setShowProfileModal] =
+    useState(false);
+
   useEffect(() => {
     if (editingVehicle) {
-      const editForm = document.getElementById("modifier-vehicule");
+      const editForm =
+        document.getElementById("modifier-vehicule");
 
       if (editForm) {
         editForm.scrollIntoView({
@@ -46,7 +67,7 @@ function App() {
     const fetchVehicles = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/vehicles"
+          apiUrl("/api/vehicles")
         );
 
         const data = await response.json();
@@ -58,11 +79,12 @@ function App() {
           );
         }
 
-        const formattedVehicles = data.vehicles.map((vehicle) => ({
-          ...vehicle,
-          price: Number(vehicle.price),
-          monthlyPrice: Number(vehicle.monthly_price),
-        }));
+        const formattedVehicles =
+          data.vehicles.map((vehicle) => ({
+            ...vehicle,
+            price: Number(vehicle.price),
+            monthlyPrice: Number(vehicle.monthly_price),
+          }));
 
         setVehicleList(formattedVehicles);
       } catch (error) {
@@ -73,7 +95,6 @@ function App() {
 
         setVehiclesError(error.message);
 
-        // Secours temporaire si l'API est indisponible
         setVehicleList(vehicles);
       } finally {
         setVehiclesLoading(false);
@@ -124,7 +145,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/vehicles/${id}`,
+        apiUrl(`/api/vehicles/${id}`),
         {
           method: "DELETE",
         }
@@ -134,12 +155,15 @@ function App() {
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Impossible de supprimer le véhicule."
+          data.message ||
+            "Impossible de supprimer le véhicule."
         );
       }
 
       setVehicleList((previousVehicles) =>
-        previousVehicles.filter((vehicle) => vehicle.id !== id)
+        previousVehicles.filter(
+          (vehicle) => vehicle.id !== id
+        )
       );
 
       if (editingVehicle?.id === id) {
@@ -161,10 +185,32 @@ function App() {
     }
   };
 
+  const handleAuthenticated = (client) => {
+    setCurrentUser(client);
+  };
+
+  const handleUserUpdated = (client) => {
+    setCurrentUser(client);
+  };
+
+  const handleLogout = () => {
+    clearSession();
+    setCurrentUser(null);
+    setSelectedDossier(null);
+    setEditingVehicle(null);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   const filteredVehicles =
     filter === "tous"
       ? vehicleList
-      : vehicleList.filter((vehicle) => vehicle.type === filter);
+      : vehicleList.filter(
+          (vehicle) => vehicle.type === filter
+        );
 
   return (
     <div className="app">
@@ -172,21 +218,69 @@ function App() {
       {/* HEADER */}
       <header className="header">
         <div className="container header-content">
+
           <div className="logo">
             M-Motors
           </div>
 
           <nav>
             <a href="#accueil">Accueil</a>
-            <a href="#catalogue">Catalogue</a>
-            <a href="#financement">Financement</a>
-            <a href="#documents">Documents</a>
-            <a href="#espace-client">Espace client</a>
-            <a href="#suivi-dossier">Suivi du dossier</a>
 
-            <button className="login-button">
-              Connexion
-            </button>
+            <a href="#catalogue">Catalogue</a>
+
+            <a href="#financement">Financement</a>
+
+            {currentUser && (
+              <>
+                <a href="#documents">
+                  Documents
+                </a>
+
+                <a href="#espace-client">
+                  Espace client
+                </a>
+
+                <a href="#suivi-dossier">
+                  Suivi du dossier
+                </a>
+              </>
+            )}
+
+            {currentUser ? (
+              <>
+                <span className="user-greeting">
+                  Bonjour {currentUser.prenom}
+                </span>
+
+                <button
+                  type="button"
+                  className="login-button"
+                  onClick={() =>
+                    setShowProfileModal(true)
+                  }
+                >
+                  Mon profil
+                </button>
+
+                <button
+                  type="button"
+                  className="logout-button"
+                  onClick={handleLogout}
+                >
+                  Déconnexion
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                className="login-button"
+                onClick={() =>
+                  setShowAuthModal(true)
+                }
+              >
+                Connexion
+              </button>
+            )}
           </nav>
         </div>
       </header>
@@ -194,6 +288,7 @@ function App() {
       {/* HERO */}
       <section id="accueil" className="hero">
         <div className="hero-content">
+
           <p className="hero-subtitle">
             M-MOTORS
           </p>
@@ -210,16 +305,22 @@ function App() {
             choisissez la solution adaptée à votre projet.
           </p>
 
-          <a href="#catalogue" className="hero-button">
+          <a
+            href="#catalogue"
+            className="hero-button"
+          >
             Découvrir nos véhicules
           </a>
         </div>
       </section>
 
       {/* CATALOGUE */}
-      <main id="catalogue" className="catalogue container">
-
+      <main
+        id="catalogue"
+        className="catalogue container"
+      >
         <div className="section-heading">
+
           <p>NOTRE CATALOGUE</p>
 
           <h2>
@@ -233,23 +334,42 @@ function App() {
 
         {/* FILTRES */}
         <div className="filters">
+
           <button
-            className={filter === "tous" ? "active" : ""}
-            onClick={() => setFilter("tous")}
+            className={
+              filter === "tous"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setFilter("tous")
+            }
           >
             Tous
           </button>
 
           <button
-            className={filter === "achat" ? "active" : ""}
-            onClick={() => setFilter("achat")}
+            className={
+              filter === "achat"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setFilter("achat")
+            }
           >
             Achat
           </button>
 
           <button
-            className={filter === "location" ? "active" : ""}
-            onClick={() => setFilter("location")}
+            className={
+              filter === "location"
+                ? "active"
+                : ""
+            }
+            onClick={() =>
+              setFilter("location")
+            }
           >
             Location
           </button>
@@ -257,10 +377,14 @@ function App() {
 
         {/* VEHICULES */}
         <div className="vehicles-grid">
-            {vehiclesLoading ? (
-              <p>Chargement des véhicules...</p>
-            ) : (
-              filteredVehicles.map((vehicle) => (
+
+          {vehiclesLoading ? (
+            <p>
+              Chargement des véhicules...
+            </p>
+          ) : (
+            filteredVehicles.map(
+              (vehicle) => (
                 <VehicleCard
                   key={vehicle.id}
                   vehicle={vehicle}
@@ -268,21 +392,26 @@ function App() {
                   onEdit={setEditingVehicle}
                   onDelete={handleDelete}
                 />
-              ))
-            )}
-          </div>
-
-          {vehiclesError && (
-            <p className="error-message">
-              Impossible de récupérer le catalogue depuis le serveur.
-              Les données locales sont affichées temporairement.
-            </p>
+              )
+            )
           )}
+        </div>
+
+        {vehiclesError && (
+          <p className="error-message">
+            Impossible de récupérer le catalogue depuis le serveur.
+            Les données locales sont affichées temporairement.
+          </p>
+        )}
       </main>
 
       {/* FINANCEMENT */}
-      <section id="financement" className="financing">
+      <section
+        id="financement"
+        className="financing"
+      >
         <div className="container">
+
           <p>VOTRE PROJET</p>
 
           <h2>
@@ -294,26 +423,48 @@ function App() {
             dans la constitution de votre dossier.
           </p>
 
-          <button>
+          <button
+            type="button"
+            onClick={() => {
+              if (!currentUser) {
+                setShowAuthModal(true);
+                return;
+              }
+
+              document
+                .getElementById("financement-form")
+                ?.scrollIntoView({
+                  behavior: "smooth",
+                });
+            }}
+          >
             Simuler mon projet
           </button>
         </div>
       </section>
 
-      <FinancingForm />
+      {currentUser && (
+        <>
+          <div id="financement-form">
+            <FinancingForm />
+          </div>
 
-      <DocumentUpload
-        documents={documents}
-        setDocuments={setDocuments}
-      />
+          <DocumentUpload
+            documents={documents}
+            setDocuments={setDocuments}
+          />
 
-      <DocumentList documents={documents} />
+          <DocumentList
+            documents={documents}
+          />
 
-      <ClientSpace />
+          <ClientSpace />
 
-      <ClientNotifications />
+          <ClientNotifications />
 
-      <DossierStatus />
+          <DossierStatus />
+        </>
+      )}
 
       <AdminDossiers
         onSelectDossier={setSelectedDossier}
@@ -325,7 +476,9 @@ function App() {
         />
       )}
 
-      <AdminAddVehicle setVehicleList={setVehicleList} />
+      <AdminAddVehicle
+        setVehicleList={setVehicleList}
+      />
 
       {editingVehicle && (
         <AdminEditVehicle
@@ -338,15 +491,21 @@ function App() {
       {selectedVehicle && (
         <div
           className="modal-overlay"
-          onClick={() => setSelectedVehicle(null)}
+          onClick={() =>
+            setSelectedVehicle(null)
+          }
         >
           <div
             className="modal"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
             <button
               className="close-button"
-              onClick={() => setSelectedVehicle(null)}
+              onClick={() =>
+                setSelectedVehicle(null)
+              }
             >
               ×
             </button>
@@ -357,30 +516,56 @@ function App() {
             />
 
             <h2>
-              {selectedVehicle.brand} {selectedVehicle.model}
+              {selectedVehicle.brand}{" "}
+              {selectedVehicle.model}
             </h2>
 
             <p>
-              Année : {selectedVehicle.year}
+              Année :{" "}
+              {selectedVehicle.year}
             </p>
 
             <p>
-              Motorisation : {selectedVehicle.fuel}
+              Motorisation :{" "}
+              {selectedVehicle.fuel}
             </p>
 
             <p>
-              Transmission : {selectedVehicle.transmission}
+              Transmission :{" "}
+              {selectedVehicle.transmission}
             </p>
 
             <h3>
-              {selectedVehicle.price.toLocaleString("fr-FR")} €
+              {selectedVehicle.price.toLocaleString(
+                "fr-FR"
+              )}{" "}
+              €
             </h3>
 
             <p>
-              Location : {selectedVehicle.monthlyPrice} €/mois
+              Location :{" "}
+              {selectedVehicle.monthlyPrice} €/mois
             </p>
 
-            <button>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedVehicle(null);
+
+                if (!currentUser) {
+                  setShowAuthModal(true);
+                  return;
+                }
+
+                document
+                  .getElementById(
+                    "financement-form"
+                  )
+                  ?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+              }}
+            >
               Créer mon dossier
             </button>
           </div>
@@ -391,12 +576,38 @@ function App() {
       <footer>
         <div className="container">
           <strong>M-Motors</strong>
+
           <p>
             Votre partenaire automobile pour l'achat et la location.
           </p>
         </div>
       </footer>
 
+      {/* AUTHENTIFICATION */}
+      {showAuthModal && (
+        <AuthModal
+          onClose={() =>
+            setShowAuthModal(false)
+          }
+          onAuthenticated={
+            handleAuthenticated
+          }
+        />
+      )}
+
+      {/* PROFIL */}
+      {showProfileModal &&
+        currentUser && (
+          <ProfileModal
+            user={currentUser}
+            onClose={() =>
+              setShowProfileModal(false)
+            }
+            onUserUpdated={
+              handleUserUpdated
+            }
+          />
+        )}
     </div>
   );
 }
