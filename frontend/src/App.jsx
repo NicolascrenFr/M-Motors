@@ -454,9 +454,7 @@ function App() {
             setDocuments={setDocuments}
           />
 
-          <DocumentList
-            documents={documents}
-          />
+          <DocumentList />
 
           <ClientSpace />
 
