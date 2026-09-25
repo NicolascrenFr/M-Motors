@@ -20,6 +20,7 @@ function createToken(client) {
     {
       id: client.id,
       email: client.email,
+      role: client.role,
     },
     JWT_SECRET,
     {
@@ -92,7 +93,7 @@ router.post("/register", async (req, res) => {
       `
         INSERT INTO clients (nom, prenom, email, password_hash)
         VALUES ($1, $2, $3, $4)
-        RETURNING id, nom, prenom, email, created_at
+        RETURNING id, nom, prenom, email, role, created_at
       `,
       [
         nom.trim(),
@@ -150,6 +151,7 @@ router.post("/login", async (req, res) => {
           prenom,
           email,
           password_hash,
+          role,
           created_at
         FROM clients
         WHERE email = $1
@@ -202,7 +204,7 @@ router.get("/me", authenticateToken, async (req, res) => {
   try {
     const result = await pool.query(
       `
-        SELECT id, nom, prenom, email, created_at
+        SELECT id, nom, prenom, email, role, created_at
         FROM clients
         WHERE id = $1
       `,
