@@ -391,6 +391,7 @@ function App() {
                   onDetails={setSelectedVehicle}
                   onEdit={setEditingVehicle}
                   onDelete={handleDelete}
+                  isAdmin={currentUser?.role === "admin"}
                 />
               )
             )
@@ -443,7 +444,7 @@ function App() {
         </div>
       </section>
 
-      {currentUser && (
+      {currentUser?.role === "client" && (
         <>
           <div id="financement-form">
             <FinancingForm />
@@ -464,26 +465,30 @@ function App() {
         </>
       )}
 
-      <AdminDossiers
-        onSelectDossier={setSelectedDossier}
+{currentUser?.role === "admin" && (
+  <>
+    <AdminDossiers
+      onSelectDossier={setSelectedDossier}
+    />
+
+    {selectedDossier && (
+      <AdminNotification
+        dossier={selectedDossier}
       />
+    )}
 
-      {selectedDossier && (
-        <AdminNotification
-          dossier={selectedDossier}
-        />
-      )}
+    <AdminAddVehicle
+      setVehicleList={setVehicleList}
+    />
 
-      <AdminAddVehicle
+    {editingVehicle && (
+      <AdminEditVehicle
+        vehicle={editingVehicle}
         setVehicleList={setVehicleList}
       />
-
-      {editingVehicle && (
-        <AdminEditVehicle
-          vehicle={editingVehicle}
-          setVehicleList={setVehicleList}
-        />
-      )}
+    )}
+  </>
+)}
 
       {/* MODAL VEHICULE */}
       {selectedVehicle && (

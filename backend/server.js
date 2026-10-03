@@ -6,6 +6,9 @@ const multer = require("multer");
 const pool = require("./db");
 const authRoutes = require("./auth");
 
+const authenticateToken = authRoutes.authenticateToken;
+const requireAdmin = authRoutes.requireAdmin;
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -73,7 +76,7 @@ app.post("/api/clients", async (req, res) => {
   }
 });
 
-app.post("/api/documents", (req, res) => {
+app.post("/api/documents", authenticateToken, (req, res) => {
   upload.single("document")(req, res, async (error) => {
     if (error) {
       console.error("Erreur lors de l'upload :", error.message);
@@ -83,9 +86,10 @@ app.post("/api/documents", (req, res) => {
       });
     }
 
-    const { client_id, type_document } = req.body;
+    const { type_document } = req.body;
+    const client_id = req.user.id;
 
-    if (!client_id || !type_document || !req.file) {
+    if (!type_document || !req.file) {
       return res.status(400).json({
         message:
           "client_id, type_document et document sont obligatoires.",
@@ -127,13 +131,18 @@ app.post("/api/documents", (req, res) => {
   });
 });
 
-app.post("/api/dossiers", async (req, res) => {
-  const {
-    client_id,
-    vehicule,
-    type_financement,
-    duree,
-  } = req.body;
+app.post(
+  "/api/dossiers",
+  authenticateToken,
+  async (req, res) => {
+
+    const {
+      vehicule,
+      type_financement,
+      duree,
+    } = req.body;
+  
+  const client_id = req.user.id;
 
   if (!client_id || !vehicule || !type_financement || !duree) {
     return res.status(400).json({
@@ -172,17 +181,27 @@ app.post("/api/dossiers", async (req, res) => {
   }
 });
 
-app.get("/api/documents/:client_id", async (req, res) => {
+app.get(
+  "/api/documents/:client_id",
+  authenticateToken,
+  async (req, res) => {
   const { client_id } = req.params;
-
-  try {
-    const result = await pool.query(
-      `SELECT id, nom_fichier, type_document, created_at
-       FROM documents
-       WHERE client_id = $1
-       ORDER BY created_at DESC`,
-      [client_id]
-    );
+    if (
+      Number(req.user.id) !== Number(client_id) &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        message: "Accès interdit à ces documents.",
+      });
+    }
+    try {
+      const result = await pool.query(
+        `SELECT id, nom_fichier, type_document, created_at
+        FROM documents
+        WHERE client_id = $1
+        ORDER BY created_at DESC`,
+        [client_id]
+      );
 
     res.status(200).json({
       documents: result.rows,
@@ -199,8 +218,19 @@ app.get("/api/documents/:client_id", async (req, res) => {
   }
 });
 
-app.get("/api/clients/:client_id", async (req, res) => {
+app.get(
+  "/api/clients/:client_id",
+  authenticateToken,
+  async (req, res) => {
   const { client_id } = req.params;
+    if (
+      Number(req.user.id) !== Number(client_id) &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        message: "Accès interdit à ces données.",
+      });
+    }
 
   try {
     const result = await pool.query(
@@ -231,8 +261,19 @@ app.get("/api/clients/:client_id", async (req, res) => {
   }
 });
 
-app.get("/api/dossiers/client/:client_id", async (req, res) => {
+app.get(
+  "/api/dossiers/client/:client_id",
+  authenticateToken,
+  async (req, res) => {
   const { client_id } = req.params;
+    if (
+      Number(req.user.id) !== Number(client_id) &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        message: "Accès interdit à ces données.",
+      });
+    }
 
   try {
     const result = await pool.query(
@@ -259,7 +300,11 @@ app.get("/api/dossiers/client/:client_id", async (req, res) => {
   }
 });
 
-app.get("/api/dossiers", async (req, res) => {
+app.get(
+  "/api/dossiers",
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT
@@ -294,7 +339,11 @@ app.get("/api/dossiers", async (req, res) => {
   }
 });
 
-app.put("/api/dossiers/:id/statut", async (req, res) => {
+app.put(
+  "/api/dossiers/:id/statut",
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
   const { id } = req.params;
   const { statut } = req.body;
 
@@ -373,7 +422,11 @@ app.get("/api/vehicles", async (req, res) => {
   }
 });
 
-app.post("/api/vehicles", async (req, res) => {
+app.post(
+  "/api/vehicles",
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
   const {
     brand,
     model,
@@ -456,7 +509,11 @@ app.post("/api/vehicles", async (req, res) => {
   }
 });
 
-app.put("/api/vehicles/:id", async (req, res) => {
+app.put(
+  "/api/vehicles/:id",
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
   const { id } = req.params;
 
   const {
@@ -547,7 +604,11 @@ app.put("/api/vehicles/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/vehicles/:id", async (req, res) => {
+app.delete(
+  "/api/vehicles/:id",
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -580,7 +641,11 @@ app.delete("/api/vehicles/:id", async (req, res) => {
   }
 });
 
-app.post("/api/notifications", async (req, res) => {
+app.post(
+  "/api/notifications",
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
   const {
     dossier_id,
     client_id,
@@ -647,9 +712,19 @@ app.post("/api/notifications", async (req, res) => {
   }
 });
 
-app.get("/api/notifications/client/:client_id", async (req, res) => {
+app.get(
+  "/api/notifications/client/:client_id",
+  authenticateToken,
+  async (req, res) => {
   const { client_id } = req.params;
-
+    if (
+      Number(req.user.id) !== Number(client_id) &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        message: "Accès interdit à ces documents.",
+      });
+    }
   try {
     const result = await pool.query(
       `SELECT
@@ -684,22 +759,26 @@ app.get("/api/notifications/client/:client_id", async (req, res) => {
   }
 });
 
-app.patch("/api/notifications/:id/read", async (req, res) => {
+app.patch(
+  "/api/notifications/:id/read",
+  authenticateToken,
+  async (req, res) => {
   const { id } = req.params;
 
   try {
     const result = await pool.query(
       `UPDATE notifications
-       SET lu = TRUE
-       WHERE id = $1
-       RETURNING
+        SET lu = TRUE
+        WHERE id = $1
+          AND client_id = $2
+        RETURNING
          id,
          dossier_id,
          client_id,
          message,
          lu,
          created_at`,
-      [id]
+      [id, req.user.id]
     );
 
     if (result.rows.length === 0) {

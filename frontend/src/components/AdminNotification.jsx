@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { authFetch } from "../auth";
 
 function AdminNotification({ dossier }) {
   const [sending, setSending] = useState(false);
@@ -47,7 +48,7 @@ M-Motors`;
     setError("");
 
     try {
-      const response = await fetch(
+      const response = await authFetch(
         "http://localhost:3000/api/notifications",
         {
           method: "POST",

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authFetch } from "../auth";
 
 function AdminDossiers({ onSelectDossier }) {
   const [dossiers, setDossiers] = useState([]);
@@ -8,8 +9,8 @@ function AdminDossiers({ onSelectDossier }) {
 
   const fetchDossiers = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/dossiers"
+      const response = await authFetch(
+        "/api/dossiers"
       );
 
       const data = await response.json();
@@ -59,8 +60,8 @@ function AdminDossiers({ onSelectDossier }) {
     setError("");
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/dossiers/${id}/statut`,
+      const response = await authFetch(
+        `/api/dossiers/${id}/statut`,
         {
           method: "PUT",
           headers: {
