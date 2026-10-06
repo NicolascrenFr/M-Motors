@@ -148,6 +148,9 @@ function App() {
         apiUrl(`/api/vehicles/${id}`),
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
         }
       );
 
