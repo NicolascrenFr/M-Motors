@@ -9,6 +9,7 @@ function AdminAddVehicle({ setVehicleList }) {
     transmission: "",
     price: "",
     monthlyPrice: "",
+    image: "",
     type: "achat",
   });
 
@@ -23,32 +24,52 @@ function AdminAddVehicle({ setVehicleList }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+  
     console.log("Nouveau véhicule :", vehicle);
-
-    setVehicleList((previousVehicles) => [
-        ...previousVehicles,
-        {
-          ...vehicle,
-          id: Date.now(),
-          year: Number(vehicle.year),
-          price: Number(vehicle.price),
-          monthlyPrice: Number(vehicle.monthlyPrice),
-        },
-      ]);
-
-    alert("Le véhicule a été ajouté au catalogue.");
-
-    setVehicle({
-      brand: "",
-      model: "",
-      year: "",
-      fuel: "",
-      transmission: "",
-      price: "",
-      monthlyPrice: "",
-      type: "achat",
-    });
+  
+    fetch("http://localhost:3000/api/vehicles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+      body: JSON.stringify(vehicle),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+  
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Erreur lors de l'ajout du véhicule."
+          );
+        }
+  
+        return data;
+      })
+      .then((data) => {
+        setVehicleList((previousVehicles) => [
+          ...previousVehicles,
+          data.vehicle,
+        ]);
+  
+        alert("Le véhicule a été ajouté au catalogue.");
+  
+        setVehicle({
+          brand: "",
+          model: "",
+          year: "",
+          fuel: "",
+          transmission: "",
+          price: "",
+          monthlyPrice: "",
+          image: "",
+          type: "achat",
+        });
+      })
+      .catch((error) => {
+        console.error("Erreur lors de l'ajout du véhicule :", error);
+        alert(error.message);
+      });
   };
 
   return (
@@ -152,6 +173,18 @@ function AdminAddVehicle({ setVehicleList }) {
               value={vehicle.monthlyPrice}
               onChange={handleChange}
               required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="image">Image du véhicule</label>
+            <input
+              type="text"
+              id="image"
+              name="image"
+              value={vehicle.image}
+              onChange={handleChange}
+              placeholder="URL de l'image"
             />
           </div>
 

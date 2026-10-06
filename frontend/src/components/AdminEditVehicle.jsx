@@ -14,21 +14,45 @@ function AdminEditVehicle({ vehicle, setVehicleList }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    setVehicleList((previousVehicles) =>
-      previousVehicles.map((currentVehicle) =>
-        currentVehicle.id === formData.id
-          ? {
-              ...formData,
-              year: Number(formData.year),
-              price: Number(formData.price),
-              monthlyPrice: Number(formData.monthlyPrice),
-            }
-          : currentVehicle
-      )
-    );
-
-    alert("Le véhicule a été modifié.");
+  
+    fetch(`http://localhost:3000/api/vehicles/${formData.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+      body: JSON.stringify(formData),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+  
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Erreur lors de la modification du véhicule."
+          );
+        }
+  
+        return data;
+      })
+      .then((data) => {
+        setVehicleList((previousVehicles) =>
+          previousVehicles.map((currentVehicle) =>
+            currentVehicle.id === formData.id
+              ? data.vehicle
+              : currentVehicle
+          )
+        );
+  
+        alert("Le véhicule a été modifié.");
+      })
+      .catch((error) => {
+        console.error(
+          "Erreur lors de la modification du véhicule :",
+          error
+        );
+  
+        alert(error.message);
+      });
   };
 
   return (
@@ -126,6 +150,18 @@ function AdminEditVehicle({ vehicle, setVehicleList }) {
           value={formData.monthlyPrice}
           onChange={handleChange}
           required
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="edit-image">Image du véhicule</label>
+        <input
+          type="text"
+          id="edit-image"
+          name="image"
+          value={formData.image || ""}
+          onChange={handleChange}
+          placeholder="URL de l'image"
         />
       </div>
 
