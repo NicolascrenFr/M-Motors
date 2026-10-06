@@ -49,7 +49,7 @@ M-Motors`;
 
     try {
       const response = await authFetch(
-        "http://localhost:3000/api/notifications",
+        "/api/notifications",
         {
           method: "POST",
           headers: {

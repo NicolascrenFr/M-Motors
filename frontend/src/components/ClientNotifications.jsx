@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authFetch } from "../auth";
 
 function getCurrentClientId() {
   return localStorage.getItem("clientId");
@@ -28,8 +29,8 @@ function ClientNotifications() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/notifications/client/${clientId}`
+      const response = await authFetch(
+        `/api/notifications/client/${clientId}`
       );
 
       const data = await response.json();
@@ -77,8 +78,8 @@ function ClientNotifications() {
 
   const markAsRead = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/notifications/${id}/read`,
+      const response = await authFetch(
+        `/api/notifications/${id}/read`,
         {
           method: "PATCH",
         }
