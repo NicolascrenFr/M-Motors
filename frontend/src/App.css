@@ -751,29 +751,132 @@ footer p {
 /* RESPONSIVE */
 
 @media (max-width: 1000px) {
+  .header-content {
+    gap: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .header nav {
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .user-greeting {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
   .vehicles-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .hero h1 {
     font-size: 42px;
   }
+
+  .hero-content {
+    width: 90%;
+    max-width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 650px) {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .header-content {
+    width: 100%;
+    padding: 15px;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .logo {
+    width: 100%;
+    text-align: center;
+  }
+
+  .header nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
   .header nav a {
     display: none;
   }
 
+  .user-greeting {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .login-button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
   .vehicles-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero {
+    width: 100%;
+  }
+
+  .hero-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 15px;
   }
 
   .hero h1 {
     font-size: 35px;
+    overflow-wrap: break-word;
+  }
+
+  .hero p {
+    overflow-wrap: break-word;
   }
 
   .filters {
     flex-wrap: wrap;
+  }
+
+  .modal {
+    width: calc(100% - 30px);
+    max-width: none;
+  }
+
+  .modal img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .admin-add-vehicle-container,
+  .financing-container,
+  .documents-container,
+  .client-space-container,
+  .dossier-status-container,
+  .admin-dossiers-container,
+  .client-notifications-container,
+  .admin-notification-container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 }
