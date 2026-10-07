@@ -548,10 +548,11 @@ function App() {
               €
             </h3>
 
-            <p>
-              Location :{" "}
-              {selectedVehicle.monthlyPrice} €/mois
-            </p>
+            {selectedVehicle.type === "location" && (
+              <p>
+                Location : {selectedVehicle.monthlyPrice} €/mois
+              </p>
+            )}
 
             <button
               type="button"

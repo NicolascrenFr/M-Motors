@@ -30,7 +30,11 @@ function VehicleCard({
               <strong>{vehicle.price.toLocaleString("fr-FR")} €</strong>
     
               <span>
-                {vehicle.monthlyPrice} €/mois
+                {vehicle.type === "location" && (
+                  <div className="vehicle-monthly-price">
+                    {vehicle.monthlyPrice} €/mois
+                  </div>
+                )}
               </span>
             </div>
     
