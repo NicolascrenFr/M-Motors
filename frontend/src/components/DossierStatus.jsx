@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authFetch } from "../auth";
 
 function getCurrentClientId() {
   return localStorage.getItem("clientId");
@@ -29,8 +30,8 @@ function DossierStatus() {
   useEffect(() => {
     const fetchDossier = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/dossiers/client/${clientId}`
+        const response = await authFetch(
+          `/api/dossiers/client/${clientId}`
         );
   
         const data = await response.json();

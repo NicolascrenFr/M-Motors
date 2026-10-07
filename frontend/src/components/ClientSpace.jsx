@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { authFetch } from "../auth";
 
 function getCurrentClientId() {
   return localStorage.getItem("clientId");
@@ -31,8 +32,8 @@ function ClientSpace() {
     const fetchClientSpace = async () => {
       try {
         const [clientResponse, dossierResponse] = await Promise.all([
-          fetch(`http://localhost:3000/api/clients/${clientId}`),
-          fetch(`http://localhost:3000/api/dossiers/client/${clientId}`),
+          authFetch(`/api/clients/${clientId}`),
+          authFetch(`/api/dossiers/client/${clientId}`),
         ]);
   
         const clientData = await clientResponse.json();
