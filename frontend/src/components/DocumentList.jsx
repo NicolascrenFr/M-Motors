@@ -5,8 +5,43 @@ function DocumentList() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [downloadingId, setDownloadingId] = useState(null);
 
   const currentUser = getCurrentUser();
+
+  const handleDownload = async (file) => {
+    setDownloadingId(file.id);
+    setError("");
+
+    try {
+      const response = await authFetch(
+        `/api/documents/${currentUser.id}/${file.id}/download`
+      );
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(
+          data.message || "Impossible de télécharger le document."
+        );
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = file.nom_fichier;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -87,6 +122,16 @@ function DocumentList() {
                   </strong>
 
                   {" — "}
+
+                  <button
+                    type="button"
+                    onClick={() => handleDownload(document)}
+                    disabled={downloadingId === document.id}
+                  >
+                    {downloadingId === document.id
+                      ? "Téléchargement..."
+                      : "Télécharger"}
+                  </button>
 
                   {document.type_document}
 

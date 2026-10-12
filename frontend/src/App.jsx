@@ -15,6 +15,7 @@ import AdminAddVehicle from "./components/AdminAddVehicle";
 import AdminEditVehicle from "./components/AdminEditVehicle";
 import AuthModal from "./components/AuthModal";
 import ProfileModal from "./components/ProfileModal";
+import AdminNotificationList from "./components/AdminNotificationList";
 
 import {
   apiUrl,
@@ -473,6 +474,8 @@ function App() {
     <AdminDossiers
       onSelectDossier={setSelectedDossier}
     />
+
+    <AdminNotificationList />
 
     {selectedDossier && (
       <AdminNotification

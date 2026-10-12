@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { encrypt } = require("./crypto");
+const { encrypt, decrypt } = require("./crypto");
 const multer = require("multer");
 const pool = require("./db");
 const authRoutes = require("./auth");
@@ -217,6 +217,60 @@ app.get(
     });
   }
 });
+
+app.get(
+  "/api/documents/:client_id/:document_id/download",
+  authenticateToken,
+  async (req, res) => {
+    const { client_id, document_id } = req.params;
+
+    if (
+      Number(req.user.id) !== Number(client_id) &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        message: "Accès interdit à ce document.",
+      });
+    }
+
+    try {
+      const result = await pool.query(
+        `SELECT id, client_id, nom_fichier, contenu_chiffre, iv, auth_tag
+         FROM documents
+         WHERE id = $1 AND client_id = $2`,
+        [document_id, client_id]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({
+          message: "Document introuvable.",
+        });
+      }
+
+      const file = result.rows[0];
+
+      const contenu = decrypt(
+        file.contenu_chiffre,
+        file.iv,
+        file.auth_tag
+      );
+
+      res.setHeader("Content-Type", "application/octet-stream");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename*=UTF-8''${encodeURIComponent(file.nom_fichier)}`
+      );
+
+      return res.send(contenu);
+    } catch (error) {
+      console.error("Erreur lors du téléchargement du document :", error);
+
+      return res.status(500).json({
+        message: "Impossible de télécharger ce document.",
+      });
+    }
+  }
+);
 
 app.get(
   "/api/clients/:client_id",
@@ -711,6 +765,50 @@ app.post(
     });
   }
 });
+
+
+app.get(
+  "/api/notifications",
+  authenticateToken,
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const result = await pool.query(
+        `SELECT
+           notifications.id,
+           notifications.dossier_id,
+           notifications.client_id,
+           notifications.message,
+           notifications.lu,
+           notifications.created_at,
+           clients.nom,
+           clients.prenom,
+           clients.email,
+           dossiers.vehicule,
+           dossiers.statut
+         FROM notifications
+         INNER JOIN clients
+           ON notifications.client_id = clients.id
+         INNER JOIN dossiers
+           ON notifications.dossier_id = dossiers.id
+         ORDER BY notifications.created_at DESC`
+      );
+
+      return res.status(200).json({
+        notifications: result.rows,
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération des notifications administrateur :",
+        error
+      );
+
+      return res.status(500).json({
+        message: "Impossible de récupérer les notifications.",
+      });
+    }
+  }
+);
 
 app.get(
   "/api/notifications/client/:client_id",
