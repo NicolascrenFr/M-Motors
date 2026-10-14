@@ -35,7 +35,7 @@ function App() {
   const [editingVehicle, setEditingVehicle] = useState(null);
 
   const [selectedDossier, setSelectedDossier] = useState(null);
-
+  const [dossierToView, setDossierToView] = useState(null);
   const [vehicleList, setVehicleList] = useState([]);
   const [vehiclesLoading, setVehiclesLoading] = useState(true);
   const [vehiclesError, setVehiclesError] = useState("");
@@ -473,6 +473,7 @@ function App() {
   <>
     <AdminDossiers
       onSelectDossier={setSelectedDossier}
+      onViewDossier={setDossierToView}
     />
 
     <AdminNotificationList />
@@ -495,6 +496,74 @@ function App() {
     )}
   </>
 )}
+      {/* MODAL DE CONSULTATION DU DOSSIER */}
+      {dossierToView && currentUser?.role === "admin" && (
+        <div
+          className="modal-overlay"
+          onClick={() => setDossierToView(null)}
+        >
+          <div
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="dossier-detail-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              className="close-button"
+              type="button"
+              aria-label="Fermer"
+              onClick={() => setDossierToView(null)}
+            >
+              ×
+            </button>
+
+            <h2 id="dossier-detail-title">
+              Détail du dossier n°{dossierToView.id}
+            </h2>
+
+            <p>
+              <strong>Client :</strong>{" "}
+              {dossierToView.prenom} {dossierToView.nom}
+            </p>
+
+            <p>
+              <strong>E-mail :</strong> {dossierToView.email}
+            </p>
+
+            <p>
+              <strong>Véhicule :</strong> {dossierToView.vehicule}
+            </p>
+
+            <p>
+              <strong>Financement :</strong>{" "}
+              {dossierToView.type_financement}
+            </p>
+
+            <p>
+              <strong>Durée :</strong> {dossierToView.duree} mois
+            </p>
+
+            <p>
+              <strong>Statut :</strong> {dossierToView.statut}
+            </p>
+
+            <p>
+              <strong>Date de création :</strong>{" "}
+              {dossierToView.created_at
+                ? new Date(dossierToView.created_at).toLocaleString("fr-FR")
+                : "Non renseignée"}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setDossierToView(null)}
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* MODAL VEHICULE */}
       {selectedVehicle && (

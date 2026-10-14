@@ -438,6 +438,24 @@
   color: white;
 }
 
+.dossier-actions button.consulter-dossier-button {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.dossier-actions button.consulter-dossier-button:hover {
+  background-color: #1d4ed8;
+}
+
+.dossier-actions button.notifier-client-button {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+.dossier-actions button.notifier-client-button:hover {
+  background-color: #b91c1c;
+}
+
 .dossier-card h3 {
   margin: 0 0 10px;
 }

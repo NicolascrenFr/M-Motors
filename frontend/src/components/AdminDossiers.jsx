@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { authFetch } from "../auth";
 
-function AdminDossiers({ onSelectDossier }) {
+function AdminDossiers({ onSelectDossier, onViewDossier }) {
   const [dossiers, setDossiers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -152,82 +152,85 @@ function AdminDossiers({ onSelectDossier }) {
                 dossier.statut === "Dossier refusé";
 
               return (
-                <div
-                  className="dossier-card"
-                  key={dossier.id}
-                >
-                  <h3>
-                    {dossier.prenom} {dossier.nom}
-                  </h3>
 
-                  <p>
-                    <strong>Email :</strong> {dossier.email}
-                  </p>
+              <div
+                className="dossier-card"
+                key={dossier.id}
+              >
+                <h3>
+                  {dossier.prenom} {dossier.nom}
+                </h3>
 
-                  <p>
-                    <strong>Véhicule :</strong>{" "}
-                    {dossier.vehicule}
-                  </p>
+                <p>
+                  <strong>Email :</strong> {dossier.email}
+                </p>
 
-                  <p>
-                    <strong>Financement :</strong>{" "}
-                    {dossier.type_financement}
-                  </p>
+                <p>
+                  <strong>Véhicule :</strong>{" "}
+                  {dossier.vehicule}
+                </p>
 
-                  <p>
-                    <strong>Durée :</strong>{" "}
-                    {dossier.duree} mois
-                  </p>
+                <p>
+                  <strong>Financement :</strong>{" "}
+                  {dossier.type_financement}
+                </p>
 
-                  <p>
-                    <strong>Statut :</strong>{" "}
-                    {dossier.statut}
-                  </p>
+                <p>
+                  <strong>Durée :</strong>{" "}
+                  {dossier.duree} mois
+                </p>
 
-                  <div className="dossier-actions">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        updateStatus(
-                          dossier.id,
-                          "Dossier validé"
-                        )
-                      }
-                      disabled={
-                        updatingId === dossier.id ||
-                        dossier.statut === "Dossier validé"
-                      }
-                    >
-                      Valider le dossier
-                    </button>
+                <p>
+                  <strong>Statut :</strong>{" "}
+                  {dossier.statut}
+                </p>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        updateStatus(
-                          dossier.id,
-                          "Dossier refusé"
-                        )
-                      }
-                      disabled={
-                        updatingId === dossier.id ||
-                        dossier.statut === "Dossier refusé"
-                      }
-                    >
-                      Refuser le dossier
-                    </button>
+                <div className="dossier-actions">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateStatus(dossier.id, "Dossier validé")
+                    }
+                    disabled={
+                      updatingId === dossier.id ||
+                      dossier.statut === "Dossier validé"
+                    }
+                  >
+                    Valider le dossier
+                  </button>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        onSelectDossier(dossier)
-                      }
-                      disabled={!decisionMade}
-                    >
-                      Notifier le client
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateStatus(dossier.id, "Dossier refusé")
+                    }
+                    disabled={
+                      updatingId === dossier.id ||
+                      dossier.statut === "Dossier refusé"
+                    }
+                  >
+                    Refuser le dossier
+                  </button>
+
+                  <button
+                    type="button"
+                    className="consulter-dossier-button"
+                    onClick={() => onViewDossier(dossier)}
+                  >
+                    Consulter le dossier
+                  </button>
+
+                  <button
+                    type="button"
+                    className="notifier-client-button"
+                    onClick={() => onSelectDossier(dossier)}
+                    disabled={!decisionMade}
+                  >
+                    Notifier le client
+                  </button>
                 </div>
+              </div>
+
               );
             })}
           </div>

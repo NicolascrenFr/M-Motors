@@ -87,7 +87,10 @@ function DocumentList() {
   }
 
   return (
-    <section className="documents-list-section">
+      <section
+        className="documents-list-section"
+        id="documents"
+      >
       <div className="documents-container">
         <h2>Mes documents envoyés</h2>
 
