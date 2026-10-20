@@ -11,6 +11,59 @@ function DossierStatus() {
   const [error, setError] = useState("");
 
   const clientId = getCurrentClientId();
+
+  useEffect(() => {
+    if (!clientId) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchDossier = async () => {
+      try {
+        const response = await authFetch(
+          `/api/dossiers/client/${clientId}`
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Impossible de récupérer le dossier."
+          );
+        }
+
+        setDossier(data.dossier);
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération du dossier :",
+          error
+        );
+
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDossier();
+
+    const handleDossierUpdated = () => {
+      fetchDossier();
+    };
+
+    window.addEventListener(
+      "dossier-updated",
+      handleDossierUpdated
+    );
+
+    return () => {
+      window.removeEventListener(
+        "dossier-updated",
+        handleDossierUpdated
+      );
+    };
+  }, [clientId]);
+
   if (!clientId) {
     return (
       <section
@@ -26,53 +79,6 @@ function DossierStatus() {
       </section>
     );
   }
-  
-  useEffect(() => {
-    const fetchDossier = async () => {
-      try {
-        const response = await authFetch(
-          `/api/dossiers/client/${clientId}`
-        );
-  
-        const data = await response.json();
-  
-        if (!response.ok) {
-          throw new Error(
-            data.message || "Impossible de récupérer le dossier."
-          );
-        }
-  
-        setDossier(data.dossier);
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération du dossier :",
-          error
-        );
-  
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchDossier();
-  
-    const handleDossierUpdated = () => {
-      fetchDossier();
-    };
-  
-    window.addEventListener(
-      "dossier-updated",
-      handleDossierUpdated
-    );
-  
-    return () => {
-      window.removeEventListener(
-        "dossier-updated",
-        handleDossierUpdated
-      );
-    };
-  }, [clientId]);
 
   const statut = dossier?.statut || "";
 
@@ -160,7 +166,7 @@ function DossierStatus() {
         <h2>Suivi de mon dossier</h2>
 
         <p>
-          Consultez l'avancement de votre dossier de financement.
+          Consultez l&apos;avancement de votre dossier de financement.
         </p>
 
         <div className="current-status-box">

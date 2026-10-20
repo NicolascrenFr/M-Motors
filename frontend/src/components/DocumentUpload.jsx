@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { authFetch, getCurrentUser } from "../auth";
+import PropTypes from "prop-types";
 
-function DocumentUpload({ documents, setDocuments }) {
+function DocumentUpload({ setDocuments }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -196,5 +197,9 @@ function DocumentUpload({ documents, setDocuments }) {
     </section>
   );
 }
+
+DocumentUpload.propTypes = {
+  setDocuments: PropTypes.func.isRequired,
+};
 
 export default DocumentUpload;

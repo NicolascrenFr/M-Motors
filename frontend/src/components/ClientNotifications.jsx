@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { authFetch } from "../auth";
 
 function getCurrentClientId() {
@@ -11,23 +11,13 @@ function ClientNotifications() {
   const [error, setError] = useState("");
 
   const clientId = getCurrentClientId();
-  if (!clientId) {
-    return (
-      <section
-        className="client-notifications-section"
-        id="notifications"
-      >
-        <div className="client-notifications-container">
-          <h2>Mes notifications</h2>
-          <p>
-            Connectez-vous pour consulter vos notifications.
-          </p>
-        </div>
-      </section>
-    );
-  }
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
+    if (!clientId) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await authFetch(
         `/api/notifications/client/${clientId}`
@@ -54,9 +44,14 @@ function ClientNotifications() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [clientId]);
 
   useEffect(() => {
+    if (!clientId) {
+      setLoading(false);
+      return;
+    }
+
     fetchNotifications();
 
     const handleNotificationCreated = () => {
@@ -74,7 +69,23 @@ function ClientNotifications() {
         handleNotificationCreated
       );
     };
-  }, [clientId]);
+  }, [clientId, fetchNotifications]);
+
+  if (!clientId) {
+    return (
+      <section
+        className="client-notifications-section"
+        id="notifications"
+      >
+        <div className="client-notifications-container">
+          <h2>Mes notifications</h2>
+          <p>
+            Connectez-vous pour consulter vos notifications.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   const markAsRead = async (id) => {
     try {
@@ -148,7 +159,7 @@ function ClientNotifications() {
         {!error && notifications.length === 0 && (
           <div className="notification-empty">
             <p>
-              Vous n'avez aucune notification pour le moment.
+              Vous n&apos;avez aucune notification pour le moment.
             </p>
           </div>
         )}

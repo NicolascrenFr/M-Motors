@@ -657,7 +657,7 @@ function App() {
           <strong>M-Motors</strong>
 
           <p>
-            Votre partenaire automobile pour l'achat et la location.
+            Votre partenaire automobile pour l&apos;achat et la location.
           </p>
         </div>
       </footer>

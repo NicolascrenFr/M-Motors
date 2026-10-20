@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { apiUrl, saveSession } from "../auth";
+import PropTypes from "prop-types";
 
 function AuthModal({ onClose, onAuthenticated }) {
   const [mode, setMode] = useState("login");
@@ -432,7 +433,7 @@ function AuthModal({ onClose, onAuthenticated }) {
                 setMode("login");
               }}
             >
-              J'ai déjà un compte
+              J&apos;ai déjà un compte
             </button>
           </>
         )}
@@ -442,7 +443,7 @@ function AuthModal({ onClose, onAuthenticated }) {
             <h2>Mot de passe oublié</h2>
 
             <p>
-              Saisissez l'adresse e-mail associée à
+              Saisissez l&apos;adresse e-mail associée à
               votre compte.
             </p>
 
@@ -574,5 +575,10 @@ function AuthModal({ onClose, onAuthenticated }) {
     </div>
   );
 }
+
+AuthModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  onAuthenticated: PropTypes.func.isRequired,
+};
 
 export default AuthModal;

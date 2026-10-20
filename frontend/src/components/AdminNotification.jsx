@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { authFetch } from "../auth";
+import PropTypes from "prop-types";
 
 function AdminNotification({ dossier }) {
   const [sending, setSending] = useState(false);
@@ -139,7 +140,7 @@ M-Motors`;
         {messageSent && (
           <p className="notification-success">
             La notification a été enregistrée et est maintenant
-            disponible dans l'espace client.
+            disponible dans l&apos;espace client.
           </p>
         )}
 
@@ -152,5 +153,16 @@ M-Motors`;
     </section>
   );
 }
+
+AdminNotification.propTypes = {
+  dossier: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    client_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    prenom: PropTypes.string,
+    nom: PropTypes.string,
+    statut: PropTypes.string,
+    vehicule: PropTypes.string,
+  }),
+};
 
 export default AdminNotification;

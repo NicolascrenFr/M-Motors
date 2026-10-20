@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 function VehicleCard({
   vehicle,
   onDetails,
@@ -61,4 +63,26 @@ function VehicleCard({
       );
     }
   
+    VehicleCard.propTypes = {
+      vehicle: PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        image: PropTypes.string,
+        brand: PropTypes.string.isRequired,
+        model: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
+        year: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        fuel: PropTypes.string,
+        transmission: PropTypes.string,
+        price: PropTypes.number.isRequired,
+        monthlyPrice: PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.number,
+        ]),
+      }).isRequired,
+      onDetails: PropTypes.func.isRequired,
+      onEdit: PropTypes.func.isRequired,
+      onDelete: PropTypes.func.isRequired,
+      isAdmin: PropTypes.bool.isRequired,
+    };
+
   export default VehicleCard;

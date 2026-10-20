@@ -8,6 +8,7 @@ function DocumentList() {
   const [downloadingId, setDownloadingId] = useState(null);
 
   const currentUser = getCurrentUser();
+  const currentUserId = currentUser?.id;
 
   const handleDownload = async (file) => {
     setDownloadingId(file.id);
@@ -45,7 +46,7 @@ function DocumentList() {
 
   useEffect(() => {
     const fetchDocuments = async () => {
-      if (!currentUser) {
+      if (!currentUserId) {
         setDocuments([]);
         setLoading(false);
         return;
@@ -53,7 +54,7 @@ function DocumentList() {
 
       try {
         const response = await authFetch(
-          `/api/documents/${currentUser.id}`
+          `/api/documents/${currentUserId}`
         );
 
         const data = await response.json();
@@ -80,7 +81,7 @@ function DocumentList() {
     };
 
     fetchDocuments();
-  }, [currentUser?.id]);
+  }, [currentUserId]);
 
   if (!currentUser) {
     return null;

@@ -12,6 +12,70 @@ function ClientSpace() {
   const [error, setError] = useState("");
 
   const clientId = getCurrentClientId();
+
+  useEffect(() => {
+    if (!clientId) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchClientSpace = async () => {
+      try {
+        const [clientResponse, dossierResponse] = await Promise.all([
+          authFetch(`/api/clients/${clientId}`),
+          authFetch(`/api/dossiers/client/${clientId}`),
+        ]);
+
+        const clientData = await clientResponse.json();
+        const dossierData = await dossierResponse.json();
+
+        if (!clientResponse.ok) {
+          throw new Error(
+            clientData.message ||
+              "Impossible de récupérer les informations du client."
+          );
+        }
+
+        if (!dossierResponse.ok) {
+          throw new Error(
+            dossierData.message ||
+              "Impossible de récupérer le dossier."
+          );
+        }
+
+        setClient(clientData.client);
+        setDossier(dossierData.dossier);
+      } catch (error) {
+        console.error(
+          "Erreur lors du chargement de l'espace client :",
+          error
+        );
+
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClientSpace();
+
+    const handleDossierUpdated = () => {
+      fetchClientSpace();
+    };
+
+    window.addEventListener(
+      "dossier-updated",
+      handleDossierUpdated
+    );
+
+    return () => {
+      window.removeEventListener(
+        "dossier-updated",
+        handleDossierUpdated
+      );
+    };
+  }, [clientId]);
+
   if (!clientId) {
     return (
       <section
@@ -27,64 +91,6 @@ function ClientSpace() {
       </section>
     );
   }
-
-  useEffect(() => {
-    const fetchClientSpace = async () => {
-      try {
-        const [clientResponse, dossierResponse] = await Promise.all([
-          authFetch(`/api/clients/${clientId}`),
-          authFetch(`/api/dossiers/client/${clientId}`),
-        ]);
-  
-        const clientData = await clientResponse.json();
-        const dossierData = await dossierResponse.json();
-  
-        if (!clientResponse.ok) {
-          throw new Error(
-            clientData.message ||
-              "Impossible de récupérer les informations du client."
-          );
-        }
-  
-        if (!dossierResponse.ok) {
-          throw new Error(
-            dossierData.message ||
-              "Impossible de récupérer le dossier."
-          );
-        }
-  
-        setClient(clientData.client);
-        setDossier(dossierData.dossier);
-      } catch (error) {
-        console.error(
-          "Erreur lors du chargement de l'espace client :",
-          error
-        );
-  
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchClientSpace();
-  
-    const handleDossierUpdated = () => {
-      fetchClientSpace();
-    };
-  
-    window.addEventListener(
-      "dossier-updated",
-      handleDossierUpdated
-    );
-  
-    return () => {
-      window.removeEventListener(
-        "dossier-updated",
-        handleDossierUpdated
-      );
-    };
-  }, [clientId]);
 
   if (loading) {
     return (

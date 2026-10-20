@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 function AdminAddVehicle({ setVehicleList }) {
   const [vehicle, setVehicle] = useState({
@@ -210,5 +211,9 @@ function AdminAddVehicle({ setVehicleList }) {
     </section>
   );
 }
+
+AdminAddVehicle.propTypes = {
+  setVehicleList: PropTypes.func.isRequired,
+};
 
 export default AdminAddVehicle;

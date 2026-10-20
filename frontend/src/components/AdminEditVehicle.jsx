@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 function AdminEditVehicle({ vehicle, setVehicleList }) {
   const [formData, setFormData] = useState(vehicle);
@@ -185,5 +186,10 @@ function AdminEditVehicle({ vehicle, setVehicleList }) {
     </form>
   );
 }
+
+AdminEditVehicle.propTypes = {
+  vehicle: PropTypes.object.isRequired,
+  setVehicleList: PropTypes.func.isRequired,
+};
 
 export default AdminEditVehicle;

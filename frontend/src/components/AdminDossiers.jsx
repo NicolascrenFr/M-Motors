@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { authFetch } from "../auth";
+import PropTypes from "prop-types";
 
 function AdminDossiers({ onSelectDossier, onViewDossier }) {
   const [dossiers, setDossiers] = useState([]);
@@ -239,5 +240,10 @@ function AdminDossiers({ onSelectDossier, onViewDossier }) {
     </section>
   );
 }
+
+AdminDossiers.propTypes = {
+  onSelectDossier: PropTypes.func,
+  onViewDossier: PropTypes.func,
+};
 
 export default AdminDossiers;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { authFetch } from "../auth";
+import PropTypes from "prop-types";
 
 function ProfileModal({ user, onClose, onUserUpdated }) {
   const [formData, setFormData] = useState({
@@ -170,5 +171,15 @@ function ProfileModal({ user, onClose, onUserUpdated }) {
     </div>
   );
 }
+
+ProfileModal.propTypes = {
+  user: PropTypes.shape({
+    nom: PropTypes.string,
+    prenom: PropTypes.string,
+    email: PropTypes.string,
+  }),
+  onClose: PropTypes.func.isRequired,
+  onUserUpdated: PropTypes.func.isRequired,
+};
 
 export default ProfileModal;
