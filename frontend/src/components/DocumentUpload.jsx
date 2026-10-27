@@ -148,14 +148,14 @@ function DocumentUpload({ setDocuments }) {
           className="documents-form"
         >
           <div className="form-group">
-            <label htmlFor="documents">
-              Documents justificatifs
-            </label>
+          <label htmlFor="documents-upload">
+            Documents justificatifs
+          </label>
 
             <input
               ref={fileInputRef}
               type="file"
-              id="documents"
+              id="documents-upload"
               name="documents"
               multiple
               onChange={handleChange}
