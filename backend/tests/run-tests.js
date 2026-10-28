@@ -5,3 +5,8 @@ require("./notifications.test");
 require("./dossiers.test");
 require("./documents.test");
 require("./auth-routes.test");
+require("./vehicles-unit.test");
+require("./crypto-unit.test");
+require("./notifications-unit.test");
+require("./dossiers-unit.test");
+require("./auth-unit.test");
