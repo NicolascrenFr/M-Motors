@@ -28,7 +28,7 @@ function AdminAddVehicle({ setVehicleList }) {
   
     console.log("Nouveau véhicule :", vehicle);
   
-    fetch("http://localhost:3000/api/vehicles", {
+    fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

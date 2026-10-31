@@ -16,7 +16,7 @@ function AdminEditVehicle({ vehicle, setVehicleList }) {
   const handleSubmit = (event) => {
     event.preventDefault();
   
-    fetch(`http://localhost:3000/api/vehicles/${formData.id}`, {
+    fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/api/vehicles/${formData.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
