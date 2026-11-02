@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { authFetch, getCurrentUser } from "../auth";
 
-function FinancingForm() {
+function FinancingForm({ vehicles = [] }) {
   const currentUser = getCurrentUser();
 
   const [formData, setFormData] = useState({
@@ -246,21 +246,14 @@ function FinancingForm() {
                 Sélectionnez un véhicule
               </option>
 
-              <option value="Peugeot 308">
-                Peugeot 308
-              </option>
-
-              <option value="Renault Austral">
-                Renault Austral
-              </option>
-
-              <option value="BMW Série 3">
-                BMW Série 3
-              </option>
-
-              <option value="Tesla Model 3">
-                Tesla Model 3
-              </option>
+              {vehicles.map((vehicle) => (
+                <option
+                  key={vehicle.id}
+                  value={`${vehicle.brand} ${vehicle.model}`}
+                >
+                  {vehicle.brand} {vehicle.model}
+                </option>
+              ))}
             </select>
           </div>
 

@@ -451,7 +451,7 @@ function App() {
       {currentUser?.role === "client" && (
         <>
           <div id="financement-form">
-            <FinancingForm />
+            <FinancingForm vehicles={vehicleList} />
           </div>
 
           <DocumentUpload
