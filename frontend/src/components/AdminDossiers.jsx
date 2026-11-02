@@ -187,6 +187,33 @@ function AdminDossiers({ onSelectDossier, onViewDossier }) {
                 </p>
 
                 <div className="dossier-actions">
+                <button
+                  type="button"
+                  onClick={() =>
+                    updateStatus(dossier.id, "Documents reçus")
+                  }
+                  disabled={
+                    updatingId === dossier.id ||
+                    dossier.statut === "Documents reçus" ||
+                    decisionMade
+                  }
+                >
+                  Documents reçus
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    updateStatus(dossier.id, "En cours d'étude")
+                  }
+                  disabled={
+                    updatingId === dossier.id ||
+                    dossier.statut === "En cours d'étude" ||
+                    decisionMade
+                  }
+                >
+                  En cours d'étude
+                </button>
                   <button
                     type="button"
                     onClick={() =>

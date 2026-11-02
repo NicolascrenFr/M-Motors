@@ -402,6 +402,8 @@ app.put(
   const { statut } = req.body;
 
   const statutsAutorises = [
+    "Documents reçus",
+    "En cours d'étude",
     "Dossier validé",
     "Dossier refusé",
   ];
