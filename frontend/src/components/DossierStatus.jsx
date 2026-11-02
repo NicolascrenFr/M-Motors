@@ -170,7 +170,7 @@ function DossierStatus() {
         </p>
 
         <div className="current-status-box">
-          <span>Statut actuel</span>
+          <span>Statut actuel : </span>{" "}
           <strong>{statut}</strong>
         </div>
 

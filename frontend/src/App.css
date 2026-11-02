@@ -497,6 +497,33 @@
   flex-shrink: 0;
 }
 
+.current-status-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Étape actuelle : cercle vert */
+.status-step.current > span {
+  background-color: #16a34a;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* Étapes précédentes : cercle vert clair */
+.status-step.completed > span {
+  background-color: #dcfce7;
+  color: #166534;
+  font-weight: bold;
+}
+
+/* Mettre en évidence la ligne de l'étape actuelle */
+.status-step.current {
+  border-color: #16a34a;
+  background-color: #f0fdf4;
+}
+
 .status-step h3 {
   margin: 0 0 5px;
 }
