@@ -35,8 +35,10 @@ function DocumentList() {
       document.body.appendChild(link);
       link.click();
       link.remove();
-
-      URL.revokeObjectURL(url);
+      
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -107,9 +109,8 @@ function DocumentList() {
           </p>
         )}
 
-        {!loading &&
-          !error &&
-          documents.length === 0 && (
+          {!loading &&
+            documents.length > 0 && (
             <p>
               Aucun document envoyé.
             </p>
