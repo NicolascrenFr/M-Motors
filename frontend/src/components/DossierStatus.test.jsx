@@ -47,9 +47,11 @@ describe("DossierStatus", () => {
 
     render(<DossierStatus />);
 
-    expect(
-      await screen.findByText("Aucun dossier de financement trouvé.")
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText("Aucun dossier de financement trouvé.")
+      ).toBeInTheDocument();
+    });
 
     expect(authFetch).toHaveBeenCalledWith(
       "/api/dossiers/client/2"
@@ -67,7 +69,7 @@ describe("DossierStatus", () => {
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText("Statut actuel")
+      screen.getByText("Statut actuel :")
     ).toBeInTheDocument();
   });
 
@@ -148,7 +150,7 @@ describe("DossierStatus", () => {
 
     render(<DossierStatus />);
 
-    await screen.findByText("Statut actuel");
+    await screen.findByText("Statut actuel :");
 
     fireEvent(
       window,

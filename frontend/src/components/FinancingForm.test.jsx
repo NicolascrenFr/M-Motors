@@ -16,6 +16,14 @@ describe("FinancingForm", () => {
     email: "jean@test.fr",
   };
 
+  const vehicles = [
+    {
+      id: 1,
+      brand: "Peugeot",
+      model: "308",
+    },
+  ];
+
   beforeEach(() => {
     vi.clearAllMocks();
     getCurrentUser.mockReturnValue(client);
@@ -105,7 +113,7 @@ describe("FinancingForm", () => {
     window.addEventListener("dossier-updated", evenement);
 
     try {
-      render(<FinancingForm />);
+      render(<FinancingForm vehicles={vehicles} />);
       remplirFormulaire();
 
       fireEvent.click(
@@ -150,7 +158,7 @@ describe("FinancingForm", () => {
       }),
     });
 
-    render(<FinancingForm />);
+    render(<FinancingForm vehicles={vehicles} />);
     remplirFormulaire();
 
     fireEvent.click(
@@ -170,7 +178,7 @@ describe("FinancingForm", () => {
       }),
     });
 
-    render(<FinancingForm />);
+    render(<FinancingForm vehicles={vehicles} />);
     remplirFormulaire();
 
     fireEvent.change(screen.getByLabelText("Choix du financement"), {

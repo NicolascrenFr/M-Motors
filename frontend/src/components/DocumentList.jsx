@@ -110,15 +110,14 @@ function DocumentList() {
         )}
 
           {!loading &&
-            documents.length > 0 && (
+            documents.length === 0 && (
             <p>
               Aucun document envoyé.
             </p>
           )}
 
-        {!loading &&
-          !error &&
-          documents.length > 0 && (
+            {!loading &&
+              documents.length > 0 && (
             <ul>
               {documents.map((document) => (
                 <li key={document.id}>

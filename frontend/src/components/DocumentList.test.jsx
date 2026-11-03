@@ -173,9 +173,11 @@ import {
   
       expect(clickSpy).toHaveBeenCalled();
   
-      expect(revokeObjectURL).toHaveBeenCalledWith(
-        "blob:document-test"
-      );
+      await waitFor(() => {
+        expect(revokeObjectURL).toHaveBeenCalledWith(
+          "blob:document-test"
+        );
+      }, { timeout: 2000 });
     });
   
     it("affiche une erreur si le téléchargement échoue", async () => {
@@ -203,9 +205,9 @@ import {
       ).toBeInTheDocument();
   
       expect(
-        screen.queryAllByRole("button", {
+        screen.getAllByRole("button", {
           name: "Télécharger",
         })
-      ).toHaveLength(0);
+      ).toHaveLength(2);
     });
   });
